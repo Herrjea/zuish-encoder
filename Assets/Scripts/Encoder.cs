@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
+using System.IO;
 
 
 public enum Kerning
@@ -11,20 +12,23 @@ public enum Kerning
 
 public class Encoder : MonoBehaviour
 {
-    [TextArea, SerializeField] string input;
+    [SerializeField] string filePath;
     [SerializeField] Cipher cipher;
     [SerializeField] GameObject letterPrefab;
     [SerializeField] int lineLength;
     [SerializeField] Kerning kerning = Kerning.Standard;
-    List<Transform> encoded;
+    List<List<Transform>> encoded;
     float kerningSize = 0.2f;
+
+
 
 
     void Awake()
     {
-        string text = ProcessString(input);
+        string text = ProcessString(File.ReadAllText("Assets/Resources/" + filePath + ".txt"));
 
-        encoded = new List<Transform>();
+        encoded = new List<List<Transform>>();
+        encoded.Add(new List<Transform>());
         int x = 0, y = 0;
         Transform letter;
         char c;
@@ -41,19 +45,62 @@ public class Encoder : MonoBehaviour
                     -x - (ApplyKerning ? kerningSize * x : 0),
                     0
                 );
-                encoded.Add(letter);
+                encoded[y].Add(letter);
                 x++;
             } 
             else
             {
-                y++;
-                x = 0;
+                NewLine();
             }
-
         }
 
-    }
+        void NewLine()
+        {
+            y++;
+            x = 0;
+            encoded.Add(new List<Transform>());
+        }
 
+
+        /*
+        GameEvents.NewTextCenter.Invoke(encoded[encoded.Count - 1].position / 2);
+        GameEvents.NewTextSize.Invoke(
+            -encoded[encoded.Count - 1].position.x,
+            -encoded[encoded.Count - 1].position.y
+        );
+        */
+
+        NewTextBox();
+
+        // Remove last line if it remained empty in the end
+        if (encoded[encoded.Count - 1].Count == 0)
+            encoded.RemoveAt(encoded.Count - 1);
+    }
+    
+
+    void NewTextBox()
+    {
+        float width = encoded.Count - 1 + (ApplyKerning ? kerningSize * (encoded.Count - 2) : 0);
+        float height = 0;
+
+        foreach (List<Transform> line in encoded)
+            if (line.Count > height)
+                height = line.Count;
+        height -= 1;
+        print(height);
+
+        if (ApplyKerning)
+            height += kerningSize * (height - 1);
+
+        GameEvents.NewTextSize.Invoke(width, height);
+        GameEvents.NewTextCenter.Invoke(new Vector3(
+            -width / 2, 
+            -height / 2 + 0.5f, 
+            0
+        ));
+        print("width: " + width);
+        print("height: " + height);
+    }
 
     string ProcessString(string text)
     {
@@ -88,7 +135,7 @@ public class Encoder : MonoBehaviour
 
     Transform GenerateLetter(char c)
     {
-        Transform letter = GameObject.Instantiate(letterPrefab).transform;
+        Transform letter = GameObject.Instantiate(letterPrefab, transform).transform;
         Sprite sprite = GetSprite(c);
         letter.GetComponent<SpriteRenderer>().sprite = sprite;
         return letter;
