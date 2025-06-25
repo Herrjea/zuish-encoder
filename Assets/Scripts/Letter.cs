@@ -28,6 +28,9 @@ public class Letter : MonoBehaviour
                 ease.Evaluate(t / moveTime)
             );
 
+            if (isSpace)
+            print(t);
+
             yield return null;
         }
 

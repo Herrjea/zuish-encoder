@@ -72,6 +72,23 @@ public class Encoder : MonoBehaviour
         if (encoded[encoded.Count - 1].Count == 0)
             encoded.RemoveAt(encoded.Count - 1);
     }
+
+
+    [ContextMenu("Update positions")]
+    void UpdatePositions()
+    {
+        for (int i = 0; i < encoded.Count; i++)
+            for (int j = 0; j < encoded[i].Count; j++)
+            {
+                encoded[i][j].MoveTo(new Vector3(
+                    -i - (ApplyKerning ? kerningSize * i : 0), 
+                    -j - (ApplyKerning ? kerningSize * j : 0),
+                    0
+                ));
+            }
+
+        NewTextBox();
+    }
     
 
     void NewTextBox()
@@ -148,6 +165,18 @@ public class Encoder : MonoBehaviour
         print("value not found: '" + c + "'");
         return null;
     }
+
+
+    public void ToggleKerning()
+    {
+        if (kerning == Kerning.Standard)
+            kerning = Kerning.Hardcore;
+        else
+            kerning = Kerning.Standard;
+
+        UpdatePositions();
+    }
+
 
     bool ApplyKerning 
     {
