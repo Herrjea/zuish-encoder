@@ -17,7 +17,7 @@ public class Encoder : MonoBehaviour
     [SerializeField] GameObject letterPrefab;
     [SerializeField] int lineLength;
     [SerializeField] Kerning kerning = Kerning.Standard;
-    List<List<Transform>> encoded;
+    List<List<Letter>> encoded;
     float kerningSize = 0.2f;
 
 
@@ -27,10 +27,10 @@ public class Encoder : MonoBehaviour
     {
         string text = ProcessString(File.ReadAllText("Assets/Resources/" + filePath + ".txt"));
 
-        encoded = new List<List<Transform>>();
-        encoded.Add(new List<Transform>());
+        encoded = new List<List<Letter>>();
+        encoded.Add(new List<Letter>());
         int x = 0, y = 0;
-        Transform letter;
+        Letter letter;
         char c;
 
         for (int i = 0; i < text.Length; i++)
@@ -39,12 +39,17 @@ public class Encoder : MonoBehaviour
             c = text[i];
             if (c != '\n')
             {
+                if (x > lineLength && CurrentLineHasSpace)
+                {
+                    /////////////
+                }
+
                 letter = GenerateLetter(c);
-                letter.position = new Vector3(
+                letter.MoveTo(new Vector3(
                     -y - (ApplyKerning ? kerningSize * y : 0), 
                     -x - (ApplyKerning ? kerningSize * x : 0),
                     0
-                );
+                ));
                 encoded[y].Add(letter);
                 x++;
             } 
@@ -58,17 +63,8 @@ public class Encoder : MonoBehaviour
         {
             y++;
             x = 0;
-            encoded.Add(new List<Transform>());
+            encoded.Add(new List<Letter>());
         }
-
-
-        /*
-        GameEvents.NewTextCenter.Invoke(encoded[encoded.Count - 1].position / 2);
-        GameEvents.NewTextSize.Invoke(
-            -encoded[encoded.Count - 1].position.x,
-            -encoded[encoded.Count - 1].position.y
-        );
-        */
 
         NewTextBox();
 
@@ -83,7 +79,7 @@ public class Encoder : MonoBehaviour
         float width = encoded.Count - 1 + (ApplyKerning ? kerningSize * (encoded.Count - 2) : 0);
         float height = 0;
 
-        foreach (List<Transform> line in encoded)
+        foreach (List<Letter> line in encoded)
             if (line.Count > height)
                 height = line.Count;
         height -= 1;
@@ -133,11 +129,13 @@ public class Encoder : MonoBehaviour
         return result;
     }
 
-    Transform GenerateLetter(char c)
+    Letter GenerateLetter(char c)
     {
-        Transform letter = GameObject.Instantiate(letterPrefab, transform).transform;
+        Letter letter = GameObject.Instantiate(letterPrefab, transform).GetComponent<Letter>();
         Sprite sprite = GetSprite(c);
         letter.GetComponent<SpriteRenderer>().sprite = sprite;
+        if (c == ' ')
+            letter.isSpace = true;
         return letter;
     }
 
@@ -154,5 +152,13 @@ public class Encoder : MonoBehaviour
     bool ApplyKerning 
     {
         get => kerning == Kerning.Standard;
+    }
+
+    bool CurrentLineHasSpace
+    {
+        get
+        {
+            return true;
+        }
     }
 }
