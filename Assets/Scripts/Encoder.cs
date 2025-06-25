@@ -21,17 +21,17 @@ public class Encoder : MonoBehaviour
     float kerningSize = 0.2f;
 
 
-
-
+    int x, y;
     void Awake()
     {
         string text = ProcessString(File.ReadAllText("Assets/Resources/" + filePath + ".txt"));
 
         encoded = new List<List<Letter>>();
         encoded.Add(new List<Letter>());
-        int x = 0, y = 0;
         Letter letter;
         char c;
+        x = 0;
+        y = 0;
 
         for (int i = 0; i < text.Length; i++)
         {
@@ -39,18 +39,12 @@ public class Encoder : MonoBehaviour
             c = text[i];
             if (c != '\n')
             {
-                if (x > lineLength && CurrentLineHasSpace)
+                if (x >= lineLength && CurrentLineHasSpace)
                 {
-                    /////////////
+                    MoveCurrentWordToNextLine();
                 }
 
-                letter = GenerateLetter(c);
-                letter.MoveTo(new Vector3(
-                    -y - (ApplyKerning ? kerningSize * y : 0), 
-                    -x - (ApplyKerning ? kerningSize * x : 0),
-                    0
-                ));
-                encoded[y].Add(letter);
+                encoded[y].Add(GenerateLetter(c));
                 x++;
             } 
             else
@@ -59,22 +53,43 @@ public class Encoder : MonoBehaviour
             }
         }
 
-        void NewLine()
-        {
-            y++;
-            x = 0;
-            encoded.Add(new List<Letter>());
-        }
 
-        NewTextBox();
+        UpdatePositions();
 
         // Remove last line if it remained empty in the end
         if (encoded[encoded.Count - 1].Count == 0)
             encoded.RemoveAt(encoded.Count - 1);
     }
 
+    void NewLine()
+    {
+        y++;
+        x = 0;
+        encoded.Add(new List<Letter>());
+    }
 
-    [ContextMenu("Update positions")]
+    void MoveCurrentWordToNextLine()
+    {
+        List<Letter> word = new List<Letter>();
+
+        int line = encoded.Count - 1;
+        int letter = encoded[line].Count - 1;
+        while (!encoded[line][letter].isSpace)
+        {
+            word.Insert(0, encoded[line][letter]);
+            encoded[line].RemoveAt(encoded[line].Count - 1);
+
+            letter--;
+        }
+
+        NewLine();
+        foreach (Letter l in word)
+            encoded[y].Add(l);
+
+
+    }
+
+
     void UpdatePositions()
     {
         for (int i = 0; i < encoded.Count; i++)
@@ -100,7 +115,6 @@ public class Encoder : MonoBehaviour
             if (line.Count > height)
                 height = line.Count;
         height -= 1;
-        print(height);
 
         if (ApplyKerning)
             height += kerningSize * (height - 1);
@@ -111,8 +125,6 @@ public class Encoder : MonoBehaviour
             -height / 2 + 0.5f, 
             0
         ));
-        print("width: " + width);
-        print("height: " + height);
     }
 
     string ProcessString(string text)
@@ -126,10 +138,24 @@ public class Encoder : MonoBehaviour
             char c = text[i];
 
             if (c >= 'A' && c <= 'Z')
-                result += (char)(c + shift);
+            {
+                if (c == 'Q')
+                    result += 'k';
+                else if (c == 'V')
+                    result += 'u';
+                else
+                    result += (char)(c + shift);
+            }
 
             else if (c >= 'a' && c <= 'z')
-                result += c;
+            {
+                if (c == 'q')
+                    result += 'k';
+                else if (c == 'v')
+                    result += 'u';
+                else
+                    result += c;
+            }
 
             else if ((c == '.' || c == '\n') && previous != '\n')
                 result += '\n';
@@ -140,8 +166,6 @@ public class Encoder : MonoBehaviour
             if (result.Length > 0)
                 previous = result[result.Length - 1];
         }
-
-        print(result);
 
         return result;
     }
@@ -187,7 +211,11 @@ public class Encoder : MonoBehaviour
     {
         get
         {
-            return true;
+            foreach (Letter letter in encoded[y])
+                if (letter.isSpace)
+                    return true;
+
+            return false;
         }
     }
 }

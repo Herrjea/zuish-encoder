@@ -7,6 +7,12 @@ public class Letter : MonoBehaviour
     [SerializeField] float moveTime = 0.5f;
     [SerializeField] AnimationCurve ease;
     [HideInInspector] public bool isSpace = false;
+    SpriteRenderer sr;
+
+    void Awake()
+    {
+        sr = GetComponent<SpriteRenderer>();
+    }
 
     public void MoveTo(Vector3 position)
     {
@@ -28,12 +34,14 @@ public class Letter : MonoBehaviour
                 ease.Evaluate(t / moveTime)
             );
 
-            if (isSpace)
-            print(t);
-
             yield return null;
         }
 
         transform.position = to;
+    }
+
+    public string a
+    {
+        get => sr.sprite.name;
     }
 }

@@ -671,10 +671,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab9aeff7ba6a0ae479ee474d5f318cd8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  filePath: text1
+  filePath: text2
   cipher: {fileID: 11400000, guid: 90056aafe32b59c4aad0f5a854bda876, type: 2}
   letterPrefab: {fileID: 7022835902499484424, guid: e21523df434cad24eb9be77c20e31821, type: 3}
-  lineLength: 0
+  lineLength: 10
   kerning: 1
 --- !u!4 &838766047
 Transform:
