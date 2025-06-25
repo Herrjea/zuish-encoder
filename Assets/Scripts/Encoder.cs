@@ -18,77 +18,108 @@ public class Encoder : MonoBehaviour
     [SerializeField] int lineLength;
     [SerializeField] Kerning kerning = Kerning.Standard;
     List<List<Letter>> encoded;
+    List<Letter> rawLetters;
     float kerningSize = 0.2f;
 
 
-    int x, y;
+    //int x, y;
     void Awake()
     {
         string text = ProcessString(File.ReadAllText("Assets/Resources/" + filePath + ".txt"));
 
         encoded = new List<List<Letter>>();
-        encoded.Add(new List<Letter>());
-        Letter letter;
-        char c;
-        x = 0;
-        y = 0;
+        rawLetters = new List<Letter>();
 
         for (int i = 0; i < text.Length; i++)
+            rawLetters.Add(GenerateLetter(text[i], i));
+
+        UpdateVisuals();
+    }
+
+
+    void UpdateVisuals()
+    {
+        UpdateLining();
+        UpdatePositions();
+        UpdateTextBox();
+    }
+
+    void UpdateLining()
+    {
+        // clean old lining
+        foreach (List<Letter> line in encoded)
+            line.Clear();
+        encoded.Clear();
+        encoded.Add(new List<Letter>());
+
+        Letter letter;
+        int x = 0, y = 0;
+
+        for (int i = 0; i < rawLetters.Count; i++)
         {
+            letter = rawLetters[i];
 
-            c = text[i];
-            if (c != '\n')
-            {
-                if (x >= lineLength && CurrentLineHasSpace)
-                {
-                    MoveCurrentWordToNextLine();
-                }
-
-                encoded[y].Add(GenerateLetter(c));
-                x++;
-            } 
-            else
+            // linebreak
+            if (letter.IsLinebreak)
             {
                 NewLine();
             }
+
+            // space
+            else if (letter.IsSpace)
+            {
+                if (x >= lineLength)
+                    NewLine();
+                else
+                {
+                    encoded[y].Add(letter);
+                    x++;
+                }
+            }
+
+            // actual letter
+            else
+            {
+                if (x >= lineLength && LineHasSpace(y))
+                    MoveCurrentWordToNextLine();
+
+                encoded[y].Add(letter);
+                x++;
+            } 
         }
-
-
-        UpdatePositions();
 
         // Remove last line if it remained empty in the end
         if (encoded[encoded.Count - 1].Count == 0)
             encoded.RemoveAt(encoded.Count - 1);
-    }
 
-    void NewLine()
-    {
-        y++;
-        x = 0;
-        encoded.Add(new List<Letter>());
-    }
 
-    void MoveCurrentWordToNextLine()
-    {
-        List<Letter> word = new List<Letter>();
-
-        int line = encoded.Count - 1;
-        int letter = encoded[line].Count - 1;
-        while (!encoded[line][letter].isSpace)
+        void NewLine()
         {
-            word.Insert(0, encoded[line][letter]);
-            encoded[line].RemoveAt(encoded[line].Count - 1);
-
-            letter--;
+            y++;
+            x = 0;
+            encoded.Add(new List<Letter>());
         }
 
-        NewLine();
-        foreach (Letter l in word)
-            encoded[y].Add(l);
+        void MoveCurrentWordToNextLine()
+        {
+            List<Letter> word = new List<Letter>();
 
+            int line = encoded.Count - 1;
+            int letter = encoded[line].Count - 1;
+            while (!encoded[line][letter].IsSpace)
+            {
+                word.Insert(0, encoded[line][letter]);
+                encoded[line].RemoveAt(encoded[line].Count - 1);
 
+                letter--;
+            }
+
+            NewLine();
+            foreach (Letter l in word)
+                encoded[y].Add(l);
+            x = encoded[y].Count;
+        }
     }
-
 
     void UpdatePositions()
     {
@@ -101,12 +132,10 @@ public class Encoder : MonoBehaviour
                     0
                 ));
             }
-
-        NewTextBox();
     }
     
 
-    void NewTextBox()
+    void UpdateTextBox()
     {
         float width = encoded.Count - 1 + (ApplyKerning ? kerningSize * (encoded.Count - 2) : 0);
         float height = 0;
@@ -126,6 +155,7 @@ public class Encoder : MonoBehaviour
             0
         ));
     }
+
 
     string ProcessString(string text)
     {
@@ -170,13 +200,17 @@ public class Encoder : MonoBehaviour
         return result;
     }
 
-    Letter GenerateLetter(char c)
+    Letter GenerateLetter(char c, int i)
     {
         Letter letter = GameObject.Instantiate(letterPrefab, transform).GetComponent<Letter>();
         Sprite sprite = GetSprite(c);
         letter.GetComponent<SpriteRenderer>().sprite = sprite;
+
         if (c == ' ')
-            letter.isSpace = true;
+            letter.Type = LetterType.Space;
+        else if (c == '\n')
+            letter.Type = LetterType.Linebreak;
+
         return letter;
     }
 
@@ -199,6 +233,19 @@ public class Encoder : MonoBehaviour
             kerning = Kerning.Standard;
 
         UpdatePositions();
+        UpdateTextBox();
+    }
+
+    public void ShorterLine()
+    {
+        lineLength--;
+        UpdateVisuals();
+    }
+
+    public void LongerLine()
+    {
+        lineLength++;
+        UpdateVisuals();
     }
 
 
@@ -207,15 +254,12 @@ public class Encoder : MonoBehaviour
         get => kerning == Kerning.Standard;
     }
 
-    bool CurrentLineHasSpace
+    bool LineHasSpace(int y)
     {
-        get
-        {
-            foreach (Letter letter in encoded[y])
-                if (letter.isSpace)
-                    return true;
+        foreach (Letter letter in encoded[y])
+            if (letter.IsSpace)
+                return true;
 
-            return false;
-        }
+        return false;
     }
 }

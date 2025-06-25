@@ -6,7 +6,8 @@ public class Letter : MonoBehaviour
 {
     [SerializeField] float moveTime = 0.5f;
     [SerializeField] AnimationCurve ease;
-    [HideInInspector] public bool isSpace = false;
+    //[HideInInspector] 
+    LetterType type = LetterType.Letter;
     SpriteRenderer sr;
 
     void Awake()
@@ -40,8 +41,18 @@ public class Letter : MonoBehaviour
         transform.position = to;
     }
 
-    public string a
+    public bool IsSpace
     {
-        get => sr.sprite.name;
+        get => type == LetterType.Space;
+    }
+
+    public bool IsLinebreak
+    {
+        get => type == LetterType.Linebreak;
+    }
+
+    public LetterType Type
+    {
+        set => type = value;
     }
 }
