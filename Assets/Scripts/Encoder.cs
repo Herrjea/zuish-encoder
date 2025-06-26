@@ -149,15 +149,6 @@ public class Encoder : MonoBehaviour
             height += kerningSize * (height - 1);
 
         GameEvents.NewTextSize.Invoke(width, height);
-        /*
-        GameEvents.NewTextCenter.Invoke(new Vector3(
-            -width / 2, 
-            -height / 2 + 0.5f, 
-            0
-        ));
-        */
-
-        
     }
 
 
