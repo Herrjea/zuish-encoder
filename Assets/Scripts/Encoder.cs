@@ -1,4 +1,5 @@
 using UnityEngine;
+using TMPro;
 using System.Collections.Generic;
 using System.IO;
 
@@ -6,7 +7,7 @@ using System.IO;
 public enum Kerning
 {
     Standard,
-    Hardcore
+    Compact
 }
 
 
@@ -17,6 +18,7 @@ public class Encoder : MonoBehaviour
     [SerializeField] GameObject letterPrefab;
     [SerializeField] int lineLength;
     [SerializeField] Kerning kerning = Kerning.Standard;
+    [SerializeField] TMP_Text kerningButtonText;
     List<List<Letter>> encoded;
     List<Letter> rawLetters;
     float kerningSize = 0.2f;
@@ -34,6 +36,7 @@ public class Encoder : MonoBehaviour
             rawLetters.Add(GenerateLetter(text[i], i));
 
         UpdateVisuals();
+        kerningButtonText.text = kerning.ToString().ToLower();
 
         GameEvents.NewGlyphColor.AddListener(NewGlyphColor);
     }
@@ -244,9 +247,11 @@ public class Encoder : MonoBehaviour
     public void ToggleKerning()
     {
         if (kerning == Kerning.Standard)
-            kerning = Kerning.Hardcore;
+            kerning = Kerning.Compact;
         else
             kerning = Kerning.Standard;
+
+        kerningButtonText.text = kerning.ToString().ToLower();
 
         UpdatePositions();
         UpdateTextBox();

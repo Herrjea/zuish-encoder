@@ -1232,6 +1232,7 @@ MonoBehaviour:
   letterPrefab: {fileID: 7022835902499484424, guid: e21523df434cad24eb9be77c20e31821, type: 3}
   lineLength: 10
   kerning: 1
+  kerningButtonText: {fileID: 1862932836}
 --- !u!4 &838766047
 Transform:
   m_ObjectHideFlags: 0
