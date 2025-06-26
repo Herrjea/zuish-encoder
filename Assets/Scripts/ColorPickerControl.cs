@@ -5,11 +5,10 @@ using TMPro;
 
 public class ColorPickerControl : MonoBehaviour
 {
-    public float currentHue = 0, currentSat = 1, currentVal = 1;
+    [HideInInspector] public float currentHue = 1, currentSat = 0, currentVal = 1;
 
     [SerializeField] RawImage hueImage;
     [SerializeField] RawImage satValImage;
-    [SerializeField] Slider hueSlider;
     Texture2D hueTexture, satValTexture, outputTexture;
 
 
@@ -49,7 +48,7 @@ public class ColorPickerControl : MonoBehaviour
         satValTexture.wrapMode = TextureWrapMode.Clamp;
         satValTexture.name = "SatValTexture";
 
-        UpdateSatVatImage();
+        UpdateSatValImage();
 
         satValImage.texture = satValTexture;
     }
@@ -68,10 +67,16 @@ public class ColorPickerControl : MonoBehaviour
         UpdateColor();
     }
 
-    public void UpdateSatVatImage()
+    public void UpdateHue(float hue)
     {
-        currentHue = hueSlider.value;
+        currentHue = hue;
+        print(currentHue);
+        UpdateSatValImage();
+        UpdateColor();
+    }
 
+    public void UpdateSatValImage()
+    {
         for (int y = 0; y < satValTexture.height; y++)
             for (int x = 0; x < satValTexture.width; x++)
                 satValTexture.SetPixel(

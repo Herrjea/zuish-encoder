@@ -2,11 +2,10 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
-
-public class SatValImageControl : MonoBehaviour, IDragHandler, IPointerDownHandler
+public class HueImageControl : MonoBehaviour, IDragHandler, IPointerDownHandler
 {
     [SerializeField] Image pointer;
-    RawImage satValImage;
+    RawImage hueImage;
     ColorPickerControl control;
 
     RectTransform rt, pointerRT;
@@ -14,7 +13,7 @@ public class SatValImageControl : MonoBehaviour, IDragHandler, IPointerDownHandl
 
     void Awake()
     {
-        satValImage = GetComponent<RawImage>();
+        hueImage = GetComponent<RawImage>();
         control = GameObject.FindFirstObjectByType<ColorPickerControl>();
         rt = GetComponent<RectTransform>();
         pointerRT = pointer.GetComponent<RectTransform>();
@@ -29,16 +28,13 @@ public class SatValImageControl : MonoBehaviour, IDragHandler, IPointerDownHandl
         // get pointer position, clamped inside image
         // 0,0 is center
         Vector3 position;
-        float deltaX = rt.sizeDelta.x * .5f;
         float deltaY = rt.sizeDelta.y * .5f;
+        
         if (data != null)
         {
             position = rt.InverseTransformPoint(data.position);
 
-            if (position.x < -deltaX)
-                position.x = -deltaX;
-            if (position.x > deltaX)
-                position.x = deltaX;
+            position.x = 0;
             if (position.y < -deltaY)
                 position.y = -deltaY;
             if (position.y > deltaY)
@@ -47,7 +43,7 @@ public class SatValImageControl : MonoBehaviour, IDragHandler, IPointerDownHandl
         else
         {
             position = new Vector3(
-                rt.sizeDelta.x * control.currentSat - rt.sizeDelta.x * .5f,
+                0,
                 rt.sizeDelta.y * control.currentVal - rt.sizeDelta.y * .5f,
                 0
             );
@@ -56,13 +52,11 @@ public class SatValImageControl : MonoBehaviour, IDragHandler, IPointerDownHandl
         pointerRT.localPosition = position;
 
         // shift to all positives
-        float x = position.x + deltaX;
         float y = position.y + deltaY;
 
-        float normX = x / rt.sizeDelta.x;
         float normY = y / rt.sizeDelta.y;
 
-        control.UpdateSatVal(normX, normY);
+        control.UpdateHue(normY);
     }
 
 
