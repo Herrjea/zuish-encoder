@@ -20,6 +20,8 @@ public class SatValImageControl : MonoBehaviour, IDragHandler, IPointerDownHandl
         pointerRT.position = rt.sizeDelta * .5f;
 
         UpdateColor(null);
+
+        GameEvents.RandomizeColors.AddListener(RandomizeColors);
     }
 
 
@@ -73,5 +75,10 @@ public class SatValImageControl : MonoBehaviour, IDragHandler, IPointerDownHandl
     public void OnPointerDown(PointerEventData data)
     {
         UpdateColor(data);
+    }
+
+    void RandomizeColors()
+    {
+        UpdateColor(null);
     }
 }

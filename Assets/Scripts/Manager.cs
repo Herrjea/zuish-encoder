@@ -34,6 +34,11 @@ public class Manager : MonoBehaviour
         {
             canvas.SetActive(!canvas.activeInHierarchy);
         }
+
+        if (Input.GetKeyDown(KeyCode.RightControl))
+        {
+            RandomizeColors();
+        }
     }
 
     IEnumerator TakeScreenshot()
@@ -82,5 +87,10 @@ public class Manager : MonoBehaviour
     void UpdateBGColor(Color color)
     {
         cam.backgroundColor = color;
+    }
+
+    public void RandomizeColors()
+    {
+        GameEvents.RandomizeColors.Invoke();
     }
 }

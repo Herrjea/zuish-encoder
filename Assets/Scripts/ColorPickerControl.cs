@@ -25,6 +25,8 @@ public class ColorPickerControl : MonoBehaviour
         CreateSatValImage();
 
         UpdateColor();
+
+        GameEvents.RandomizeColors.AddListener(RandomizeColors);
     }
 
 
@@ -98,5 +100,12 @@ public class ColorPickerControl : MonoBehaviour
                 );
 
         satValTexture.Apply();
+    }
+
+    void RandomizeColors()
+    {
+        currentHue = Random.Range(0f, 1f);
+        currentSat = Random.Range(0f, 1f);
+        currentVal = Random.Range(0f, 1f);
     }
 }

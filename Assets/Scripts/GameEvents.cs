@@ -12,4 +12,6 @@ public class GameEvents
 
     public static ColorEvent NewGlyphColor = new ColorEvent();
     public static ColorEvent NewBGColor = new ColorEvent();
+
+    public static UnityEvent RandomizeColors = new UnityEvent();
 }

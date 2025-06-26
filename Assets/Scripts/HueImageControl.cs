@@ -19,6 +19,8 @@ public class HueImageControl : MonoBehaviour, IDragHandler, IPointerDownHandler
         pointerRT.position = rt.sizeDelta * .5f;
 
         UpdateColor(null);
+
+        GameEvents.RandomizeColors.AddListener(RandomizeColors);
     }
 
 
@@ -67,5 +69,10 @@ public class HueImageControl : MonoBehaviour, IDragHandler, IPointerDownHandler
     public void OnPointerDown(PointerEventData data)
     {
         UpdateColor(data);
+    }
+
+    void RandomizeColors()
+    {
+        UpdateColor(null);
     }
 }
