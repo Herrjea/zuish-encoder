@@ -9,7 +9,7 @@ public class ColorPickerControl : MonoBehaviour
 
     [SerializeField] RawImage hueImage;
     [SerializeField] RawImage satValImage;
-    Texture2D hueTexture, satValTexture, outputTexture;
+    Texture2D hueTexture, satValTexture;
 
 
     void Awake()

@@ -6,10 +6,18 @@ using System.Runtime.InteropServices;
 
 public class Manager : MonoBehaviour
 {
+    [HideInInspector] public float currentHue = 1, currentSat = 0, currentVal = 0;
     [SerializeField] GameObject canvas;
+    Camera cam;
 
     [DllImport("__Internal")]
     private static extern void DownloadFile(string filename, string base64Data);
+
+
+    void Awake()
+    {
+        cam = Camera.main;
+    }
 
 
     void Update()
@@ -56,5 +64,26 @@ public class Manager : MonoBehaviour
         string base64Image = System.Convert.ToBase64String(imageBytes);
         DownloadFile("screenshot.png", base64Image);
         */
+    }
+
+
+    public void UpdateSatVal(float sat, float val)
+    {
+        currentSat = sat;
+        currentVal = val;
+
+        UpdateBGColor();
+    }
+
+    public void UpdateHue(float hue)
+    {
+        currentHue = hue;
+
+        UpdateBGColor();
+    }
+
+    void UpdateBGColor()
+    {
+        cam.backgroundColor = Color.HSVToRGB(currentHue, currentSat, currentVal);
     }
 }
