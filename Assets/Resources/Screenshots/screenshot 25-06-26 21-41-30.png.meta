@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 6004ca75047bf4640af3816f41873368
+guid: 8811801ec663d7f4e8b5e66207c06674
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -6672225044933634842
-    second: screenshot 25-06-26 18-33-30_0
+      213: -7101664953758033977
+    second: screenshot 25-06-26 21-41-30_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -100,7 +100,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: screenshot 25-06-26 18-33-30_0
+      name: screenshot 25-06-26 21-41-30_0
       rect:
         serializedVersion: 2
         x: 0
@@ -115,8 +115,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 6e4144f2cae7763a0800000000000000
-      internalID: -6672225044933634842
+      spriteID: 7c7596dc951d17d90800000000000000
+      internalID: -7101664953758033977
       vertices: []
       indices: 
       edges: []
