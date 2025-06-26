@@ -7,19 +7,14 @@ public class SatValImageControl : MonoBehaviour, IDragHandler, IPointerDownHandl
 {
     [SerializeField] Image pointer;
     RawImage satValImage;
-    ColorPickerControl control;
-    Manager manager;
+    [SerializeField] ColorPickerControl control;
 
     RectTransform rt, pointerRT;
-
-    [SerializeField] bool glyphColor = true;
 
 
     void Awake()
     {
         satValImage = GetComponent<RawImage>();
-        control = GameObject.FindFirstObjectByType<ColorPickerControl>();
-        manager = GameObject.FindFirstObjectByType<Manager>();
         rt = GetComponent<RectTransform>();
         pointerRT = pointer.GetComponent<RectTransform>();
         pointerRT.position = rt.sizeDelta * .5f;
@@ -51,8 +46,8 @@ public class SatValImageControl : MonoBehaviour, IDragHandler, IPointerDownHandl
         else
         {
             position = new Vector3(
-                rt.sizeDelta.x * (glyphColor ? control.currentSat : manager.currentSat) - rt.sizeDelta.x * .5f,
-                rt.sizeDelta.y * (glyphColor ? control.currentVal : manager.currentSat) - rt.sizeDelta.y * .5f,
+                rt.sizeDelta.x * control.currentSat - rt.sizeDelta.x * .5f,
+                rt.sizeDelta.y * control.currentVal - rt.sizeDelta.y * .5f,
                 0
             );
         }
@@ -66,10 +61,7 @@ public class SatValImageControl : MonoBehaviour, IDragHandler, IPointerDownHandl
         float normX = x / rt.sizeDelta.x;
         float normY = y / rt.sizeDelta.y;
 
-        if (glyphColor)
-            control.UpdateSatVal(normX, normY);
-        else
-            manager.UpdateSatVal(normX, normY);
+        control.UpdateSatVal(normX, normY);
     }
 
 

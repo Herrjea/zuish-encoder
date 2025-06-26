@@ -5,15 +5,22 @@ using TMPro;
 
 public class ColorPickerControl : MonoBehaviour
 {
-    [HideInInspector] public float currentHue = 1, currentSat = 0, currentVal = 1;
+    [SerializeField] float initialHue = 1, initialSat = 0, initialVal = 1;
+    [HideInInspector] public float currentHue, currentSat, currentVal;
 
     [SerializeField] RawImage hueImage;
     [SerializeField] RawImage satValImage;
     Texture2D hueTexture, satValTexture;
 
+    [SerializeField] bool glyphColor = true;
+
 
     void Awake()
     {
+        currentHue = initialHue;
+        currentSat = initialSat;
+        currentVal = initialVal;
+
         CreateHueImage();
         CreateSatValImage();
 
@@ -57,7 +64,7 @@ public class ColorPickerControl : MonoBehaviour
     {
         Color color = Color.HSVToRGB(currentHue, currentSat, currentVal);
 
-        GameEvents.NewGlyphColor.Invoke(color);
+        (glyphColor ? GameEvents.NewGlyphColor : GameEvents.NewBGColor).Invoke(color);
     }
 
     public void UpdateSatVal(float sat, float val)

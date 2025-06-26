@@ -17,6 +17,8 @@ public class Manager : MonoBehaviour
     void Awake()
     {
         cam = Camera.main;
+
+        GameEvents.NewBGColor.AddListener(UpdateBGColor);
     }
 
 
@@ -67,23 +69,8 @@ public class Manager : MonoBehaviour
     }
 
 
-    public void UpdateSatVal(float sat, float val)
+    void UpdateBGColor(Color color)
     {
-        currentSat = sat;
-        currentVal = val;
-
-        UpdateBGColor();
-    }
-
-    public void UpdateHue(float hue)
-    {
-        currentHue = hue;
-
-        UpdateBGColor();
-    }
-
-    void UpdateBGColor()
-    {
-        cam.backgroundColor = Color.HSVToRGB(currentHue, currentSat, currentVal);
+        cam.backgroundColor = color;
     }
 }

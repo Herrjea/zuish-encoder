@@ -6,19 +6,14 @@ public class HueImageControl : MonoBehaviour, IDragHandler, IPointerDownHandler
 {
     [SerializeField] Image pointer;
     RawImage hueImage;
-    ColorPickerControl control;
-    Manager manager;
+    [SerializeField] ColorPickerControl control;
 
     RectTransform rt, pointerRT;
-
-    [SerializeField] bool glyphColor = true;
 
 
     void Awake()
     {
         hueImage = GetComponent<RawImage>();
-        control = GameObject.FindFirstObjectByType<ColorPickerControl>();
-        manager = GameObject.FindFirstObjectByType<Manager>();
         rt = GetComponent<RectTransform>();
         pointerRT = pointer.GetComponent<RectTransform>();
         pointerRT.position = rt.sizeDelta * .5f;
@@ -48,7 +43,7 @@ public class HueImageControl : MonoBehaviour, IDragHandler, IPointerDownHandler
         {
             position = new Vector3(
                 0,
-                rt.sizeDelta.y * (glyphColor ? control.currentHue : manager.currentHue) - rt.sizeDelta.y * .5f,
+                rt.sizeDelta.y * control.currentHue - rt.sizeDelta.y * .5f,
                 0
             );
         }
@@ -60,10 +55,7 @@ public class HueImageControl : MonoBehaviour, IDragHandler, IPointerDownHandler
 
         float normY = y / rt.sizeDelta.y;
 
-        if (glyphColor)
-            control.UpdateHue(normY);
-        else
-            manager.UpdateHue(normY);
+        control.UpdateHue(normY);
     }
 
 
