@@ -26,8 +26,7 @@ public class Manager : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.LeftControl))
         {
-            StartCoroutine(TakeScreenshot());
-            StartCoroutine(GetScreenshotBytes());
+            TakeScreenshot();
         }
 
         if (Input.GetKeyDown(KeyCode.Escape))
@@ -41,7 +40,13 @@ public class Manager : MonoBehaviour
         }
     }
 
-    IEnumerator TakeScreenshot()
+    public void TakeScreenshot()
+    {
+        StartCoroutine(ScreenshotCoroutine());
+        StartCoroutine(GetScreenshotBytes());
+    }
+
+    IEnumerator ScreenshotCoroutine()
     {
         bool canvasWasActive = canvas.activeInHierarchy;
 
