@@ -29,12 +29,22 @@ public class Manager : MonoBehaviour
             StartCoroutine(TakeScreenshot());
             StartCoroutine(GetScreenshotBytes());
         }
+
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            canvas.SetActive(!canvas.activeInHierarchy);
+        }
     }
 
     IEnumerator TakeScreenshot()
     {
-        canvas.SetActive(false);
-        yield return null;
+        bool canvasWasActive = canvas.activeInHierarchy;
+
+        if (canvasWasActive)
+        {
+            canvas.SetActive(false);
+            yield return null;
+        }
 
         ScreenCapture.CaptureScreenshot(
             //Application.persistentDataPath + "/Screenshots/screenshot " +
@@ -44,7 +54,7 @@ public class Manager : MonoBehaviour
         );
 
         yield return null;
-        canvas.SetActive(true);
+        canvas.SetActive(canvasWasActive);
 
         print("screenshot taken");
     }

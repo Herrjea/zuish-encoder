@@ -71,13 +71,14 @@ public class ColorPickerControl : MonoBehaviour
     {
         currentSat = sat;
         currentVal = val;
+
         UpdateColor();
     }
 
     public void UpdateHue(float hue)
     {
         currentHue = hue;
-        print(currentHue);
+
         UpdateSatValImage();
         UpdateColor();
     }
