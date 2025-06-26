@@ -1,10 +1,9 @@
 using UnityEngine;
-using TMPro;
 using System.Collections.Generic;
 using System.IO;
 
 
-public enum Kerning
+public enum Spacing
 {
     Standard,
     Compact
@@ -17,11 +16,11 @@ public class Encoder : MonoBehaviour
     [SerializeField] Cipher cipher;
     [SerializeField] GameObject letterPrefab;
     [SerializeField] int lineLength;
-    [SerializeField] Kerning kerning = Kerning.Standard;
-    [SerializeField] TMP_Text kerningButtonText;
+    [SerializeField] Spacing spacing = Spacing.Standard;
+    [SerializeField] ZuishText spacingButtonText;
     List<List<Letter>> encoded;
     List<Letter> rawLetters;
-    float kerningSize = 0.2f;
+    float spacingSize = 0.2f;
 
 
     //int x, y;
@@ -36,7 +35,7 @@ public class Encoder : MonoBehaviour
             rawLetters.Add(GenerateLetter(text[i], i));
 
         UpdateVisuals();
-        kerningButtonText.text = kerning.ToString().ToLower();
+        spacingButtonText.text = spacing.ToString().ToLower();
 
         GameEvents.NewGlyphColor.AddListener(NewGlyphColor);
     }
@@ -132,8 +131,8 @@ public class Encoder : MonoBehaviour
             for (int j = 0; j < encoded[i].Count; j++)
             {
                 encoded[i][j].MoveTo(new Vector3(
-                    -i - (ApplyKerning ? kerningSize * i : 0), 
-                    -j - (ApplyKerning ? kerningSize * j : 0),
+                    -i - (ApplySpacing ? spacingSize * i : 0), 
+                    -j - (ApplySpacing ? spacingSize * j : 0),
                     0
                 ));
             }
@@ -142,7 +141,7 @@ public class Encoder : MonoBehaviour
 
     void UpdateTextBox()
     {
-        float width = encoded.Count - 1 + (ApplyKerning ? kerningSize * (encoded.Count - 2) : 0);
+        float width = encoded.Count - 1 + (ApplySpacing ? spacingSize * (encoded.Count - 2) : 0);
         float height = 0;
 
         foreach (List<Letter> line in encoded)
@@ -150,8 +149,8 @@ public class Encoder : MonoBehaviour
                 height = line.Count;
         height -= 1;
 
-        if (ApplyKerning)
-            height += kerningSize * (height - 1);
+        if (ApplySpacing)
+            height += spacingSize * (height - 1);
 
         GameEvents.NewTextSize.Invoke(width, height);
     }
@@ -244,14 +243,14 @@ public class Encoder : MonoBehaviour
     }
 
 
-    public void ToggleKerning()
+    public void ToggleSpacing()
     {
-        if (kerning == Kerning.Standard)
-            kerning = Kerning.Compact;
+        if (spacing == Spacing.Standard)
+            spacing = Spacing.Compact;
         else
-            kerning = Kerning.Standard;
+            spacing = Spacing.Standard;
 
-        kerningButtonText.text = kerning.ToString().ToLower();
+        spacingButtonText.text = spacing.ToString().ToLower();
 
         UpdatePositions();
         UpdateTextBox();
@@ -270,9 +269,9 @@ public class Encoder : MonoBehaviour
     }
 
 
-    bool ApplyKerning 
+    bool ApplySpacing 
     {
-        get => kerning == Kerning.Standard;
+        get => spacing == Spacing.Standard;
     }
 
     bool LineHasSpace(int y)

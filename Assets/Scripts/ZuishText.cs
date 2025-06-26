@@ -5,22 +5,27 @@ using System.Collections.Generic;
 [ExecuteAlways]
 public class ZuishText : MonoBehaviour
 {
-    [SerializeField] string text = "";
+    public string text = "";
     string previousText = "";
     [SerializeField] int size = 50;
     int previousSize;
     [SerializeField] bool spacing = true;
     bool previousSpacing;
-    [SerializeField] GameObject letterPrefab;
-
-    [SerializeField] Cipher cipher;
-    Dictionary<char, Sprite> sprites;
+    [SerializeField] Color color = Color.black;
+    Color previousColor;
+    
+    static GameObject letterPrefab;
+    static Cipher cipher;
+    static Dictionary<char, Sprite> sprites;
 
     List<UILetter> letters;
 
 
     void Init()
     {
+        cipher = Resources.Load<Cipher>("cipher");
+        letterPrefab = Resources.Load<GameObject>("UI letter");
+
         sprites = new Dictionary<char, Sprite>();
         foreach (CharSpritePair pair in cipher.letters)
             sprites.Add(pair.letter, pair.sprite);
@@ -30,6 +35,7 @@ public class ZuishText : MonoBehaviour
         previousText = text;
         previousSize = size;
         previousSpacing = spacing;
+        previousColor = color;
     }
 
     void Update()
@@ -52,11 +58,17 @@ public class ZuishText : MonoBehaviour
             UpdatePositions();
             previousSpacing = spacing;
         }
+
+        if (previousColor != color)
+        {
+            UpdateColors();
+            previousColor = color;
+        }
     }
 
     void UpdateText()
     {
-        if (sprites == null)
+        if (sprites == null || letterPrefab == null || cipher == null || letters == null)
             Init();
 
         for (int i = transform.childCount - 1; i >= 0; i--)
@@ -71,6 +83,7 @@ public class ZuishText : MonoBehaviour
                 letter.Init();
                 letter.Sprite = sprites[c];
                 letter.Size = size;
+                letter.Color = color;
                 letter.Position = 
                     1f * letters.Count * size 
                     + 
@@ -92,6 +105,12 @@ public class ZuishText : MonoBehaviour
     {
         foreach (UILetter letter in letters)
             letter.Size = size;
+    }
+
+    void UpdateColors()
+    {
+        foreach (UILetter letter in letters)
+            letter.Color = color;
     }
 
     UILetter GenerateLetter(char c)

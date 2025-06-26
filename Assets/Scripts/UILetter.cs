@@ -8,7 +8,7 @@ public class UILetter : MonoBehaviour
     Image image;
     RectTransform rt;
 
-    public static Color RandomColor = Color.white;
+    public static Color RandomColor = Color.black;
 
 
     void Awake()
