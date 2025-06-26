@@ -149,11 +149,34 @@ public class Encoder : MonoBehaviour
             height += kerningSize * (height - 1);
 
         GameEvents.NewTextSize.Invoke(width, height);
+        /*
         GameEvents.NewTextCenter.Invoke(new Vector3(
             -width / 2, 
             -height / 2 + 0.5f, 
             0
         ));
+        */
+
+        
+    }
+
+
+    void Update()
+    {
+        // make the text always be centered on origin
+
+        float width = encoded[encoded.Count - 1][0].Position.x;
+        float height = 0;
+
+        foreach (List<Letter> line in encoded)
+            if (line[line.Count - 1].Position.y < height)
+                height = line[line.Count - 1].Position.y;
+
+        transform.position = new Vector3(
+            -width / 2, 
+            -height / 2, 
+            0
+        );
     }
 
 

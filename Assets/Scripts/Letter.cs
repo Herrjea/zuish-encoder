@@ -24,12 +24,12 @@ public class Letter : MonoBehaviour
     IEnumerator MoveAnimation(Vector3 to)
     {
         float t = 0;
-        Vector3 from = transform.position;
+        Vector3 from = transform.localPosition;
 
         while (t < moveTime)
         {
             t += Time.deltaTime;
-            transform.position = Vector3.Lerp(
+            transform.localPosition = Vector3.Lerp(
                 from,
                 to,
                 ease.Evaluate(t / moveTime)
@@ -38,7 +38,7 @@ public class Letter : MonoBehaviour
             yield return null;
         }
 
-        transform.position = to;
+        transform.localPosition = to;
     }
 
     public bool IsSpace
@@ -54,5 +54,10 @@ public class Letter : MonoBehaviour
     public LetterType Type
     {
         set => type = value;
+    }
+
+    public Vector3 Position
+    {
+        get => transform.localPosition;
     }
 }
