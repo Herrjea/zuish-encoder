@@ -34,6 +34,8 @@ public class Encoder : MonoBehaviour
             rawLetters.Add(GenerateLetter(text[i], i));
 
         UpdateVisuals();
+
+        GameEvents.NewGlyphColor.AddListener(NewGlyphColor);
     }
 
 
@@ -275,5 +277,12 @@ public class Encoder : MonoBehaviour
                 return true;
 
         return false;
+    }
+
+
+    void NewGlyphColor(Color color)
+    {
+        foreach (Letter letter in rawLetters)
+            letter.Color = color;
     }
 }

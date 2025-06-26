@@ -60,4 +60,9 @@ public class Letter : MonoBehaviour
     {
         get => transform.localPosition;
     }
+
+    public Color Color
+    {
+        set => sr.color = value;
+    }
 }
