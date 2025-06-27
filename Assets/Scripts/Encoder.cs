@@ -12,6 +12,7 @@ public enum Spacing
 
 public class Encoder : MonoBehaviour
 {
+    [SerializeField] bool loadFile = true;
     [SerializeField] string filePath;
     [SerializeField] Cipher cipher;
     [SerializeField] GameObject letterPrefab;
@@ -22,20 +23,59 @@ public class Encoder : MonoBehaviour
     List<Letter> rawLetters;
     float spacingSize = 0.2f;
 
+    Dictionary<KeyCode, char> chars;
+
 
     //int x, y;
     void Awake()
     {
-        string text = ProcessString(File.ReadAllText("Assets/Resources/" + filePath + ".txt"));
-
         encoded = new List<List<Letter>>();
+        encoded.Add(new List<Letter>());
         rawLetters = new List<Letter>();
 
-        for (int i = 0; i < text.Length; i++)
-            rawLetters.Add(GenerateLetter(text[i], i));
-
-        UpdateVisuals();
         spacingButtonText.text = spacing.ToString().ToLower();
+        
+        if (loadFile)
+        {
+            string text = ProcessString(File.ReadAllText("Assets/Resources/" + filePath + ".txt"));
+            for (int i = 0; i < text.Length; i++)
+                rawLetters.Add(GenerateLetter(text[i]));
+
+            UpdateVisuals();
+        }
+        else
+        {
+            chars = new Dictionary<KeyCode, char>()
+            {
+                { KeyCode.Q, 'k' },
+                { KeyCode.W, 'w' },
+                { KeyCode.E, 'e' },
+                { KeyCode.R, 'r' },
+                { KeyCode.T, 't' },
+                { KeyCode.Y, 'y' },
+                { KeyCode.U, 'u' },
+                { KeyCode.I, 'i' },
+                { KeyCode.O, 'o' },
+                { KeyCode.P, 'p' },
+                { KeyCode.A, 'a' },
+                { KeyCode.S, 's' },
+                { KeyCode.D, 'd' },
+                { KeyCode.F, 'g' },
+                { KeyCode.G, 'g' },
+                { KeyCode.H, 'h' },
+                { KeyCode.J, 'j' },
+                { KeyCode.K, 'k' },
+                { KeyCode.L, 'l' },
+                { KeyCode.Z, 'z' },
+                { KeyCode.X, 'x' },
+                { KeyCode.C, 'c' },
+                { KeyCode.V, 'u' },
+                { KeyCode.B, 'b' },
+                { KeyCode.N, 'n' },
+                { KeyCode.M, 'm' },
+                { KeyCode.Space, ' ' },
+            };
+        }
 
         GameEvents.NewGlyphColor.AddListener(NewGlyphColor);
     }
@@ -43,8 +83,10 @@ public class Encoder : MonoBehaviour
 
     void UpdateVisuals()
     {
-        UpdateLining();
-        UpdatePositions();
+        if (loadFile)
+            UpdateLining();
+        
+            UpdatePositions();
         UpdateTextBox();
     }
 
@@ -158,6 +200,53 @@ public class Encoder : MonoBehaviour
 
     void Update()
     {
+        if (!loadFile)
+        {
+            foreach (KeyCode keyCode in chars.Keys)
+                if (Input.GetKeyDown(keyCode))
+                {
+                    Letter letter = GenerateLetter(chars[keyCode]);
+                    if (encoded.Count > 0)
+                    {
+                        if (encoded[encoded.Count - 1].Count > 0)
+                            letter.InstaMoveTo(encoded[encoded.Count - 1][encoded[encoded.Count - 1].Count - 1].Position);
+                        else if (encoded.Count > 1)
+                            letter.InstaMoveTo(encoded[encoded.Count - 2][0].Position);
+                    }
+                    encoded[encoded.Count - 1].Add(letter);
+                    UpdatePositions();
+                    UpdateTextBox();
+                }
+
+            if (Input.GetKeyDown(KeyCode.Return))
+                encoded.Add(new List<Letter>());
+
+            if (Input.GetKeyDown(KeyCode.Backspace))
+            {
+                if (encoded.Count == 0 || (encoded.Count == 1 && encoded[0].Count == 0))
+                    GameObject.FindFirstObjectByType<Manager>().LoadModeSelectionScene();
+                else
+                {
+                    if (encoded[encoded.Count - 1].Count > 0)
+                    {
+                        Destroy(encoded[encoded.Count - 1][encoded[encoded.Count - 1].Count - 1].gameObject);
+                        encoded[encoded.Count - 1].RemoveAt(encoded[encoded.Count - 1].Count - 1);
+                    }
+                    else
+                    {
+                        encoded.RemoveAt(encoded.Count - 1);
+                    }
+                    
+                    UpdatePositions();
+                    UpdateTextBox();
+                }
+            }
+        }
+
+        if (encoded.Count == 0 ||encoded[encoded.Count - 1].Count == 0)
+            return;
+
+
         // make the text always be centered on origin
 
         float width = encoded[encoded.Count - 1][0].Position.x;
@@ -218,7 +307,7 @@ public class Encoder : MonoBehaviour
         return result;
     }
 
-    Letter GenerateLetter(char c, int i)
+    Letter GenerateLetter(char c)
     {
         Letter letter = GameObject.Instantiate(letterPrefab, transform).GetComponent<Letter>();
         Sprite sprite = GetSprite(c);
@@ -258,7 +347,7 @@ public class Encoder : MonoBehaviour
 
     public void ShorterLine()
     {
-        if (lineLength <= 1)
+        if (lineLength <= 1 || !loadFile)
             return;
 
         lineLength--;
@@ -267,6 +356,9 @@ public class Encoder : MonoBehaviour
 
     public void LongerLine()
     {
+        if (!loadFile)
+            return;
+
         lineLength++;
         UpdateVisuals();
     }
@@ -289,7 +381,12 @@ public class Encoder : MonoBehaviour
 
     void NewGlyphColor(Color color)
     {
-        foreach (Letter letter in rawLetters)
-            letter.Color = color;
+        if (loadFile)
+            foreach (Letter letter in rawLetters)
+                letter.Color = color;
+        else
+            foreach (List<Letter> line in encoded)
+                foreach (Letter letter in line)
+                    letter.Color = color;
     }
 }

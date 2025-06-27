@@ -21,6 +21,11 @@ public class Letter : MonoBehaviour
         StartCoroutine(MoveAnimation(position));
     }
 
+    public void InstaMoveTo(Vector3 position)
+    {
+        transform.localPosition = position;
+    }
+
     IEnumerator MoveAnimation(Vector3 to)
     {
         float t = 0;

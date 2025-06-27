@@ -56,6 +56,6 @@ public class CameraBehaviour : MonoBehaviour
         x += 2;
         y += 2;
 
-        targetSize = Mathf.Min(500, Mathf.Max(x / cam.aspect, y));
+        targetSize = Mathf.Min(5, Mathf.Max(x / cam.aspect, y));
     }
 }

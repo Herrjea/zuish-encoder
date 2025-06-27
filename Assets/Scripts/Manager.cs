@@ -10,6 +10,7 @@ public class Manager : MonoBehaviour
     [HideInInspector] public float currentHue = 1, currentSat = 0, currentVal = 0;
     [SerializeField] GameObject canvas;
     [SerializeField] Encoder encoder;
+    [SerializeField] bool canGoBack = true;
     Camera cam;
 
     [DllImport("__Internal")]
@@ -54,9 +55,9 @@ public class Manager : MonoBehaviour
             RandomizeColors();
         }
 
-        if (Input.GetKeyDown(KeyCode.Backspace))
+        if (canGoBack && Input.GetKeyDown(KeyCode.Backspace))
         {
-            SceneManager.LoadScene("ModeSelection");
+            LoadModeSelectionScene();
         }
     }
 
@@ -117,5 +118,10 @@ public class Manager : MonoBehaviour
     public void RandomizeColors()
     {
         GameEvents.RandomizeColors.Invoke();
+    }
+
+    public void LoadModeSelectionScene()
+    {
+        SceneManager.LoadScene("ModeSelection");
     }
 }
