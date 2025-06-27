@@ -23,6 +23,7 @@ public class Encoder : MonoBehaviour
     List<List<Letter>> encoded;
     List<Letter> rawLetters;
     float spacingSize = 0.2f;
+    Color currentGlyphColor = Color.white;
 
     Dictionary<KeyCode, char> chars;
 
@@ -225,6 +226,8 @@ public class Encoder : MonoBehaviour
                 if (Input.GetKeyDown(keyCode))
                 {
                     Letter letter = GenerateLetter(chars[keyCode]);
+                    letter.Color = currentGlyphColor;
+
                     if (encoded.Count > 0)
                     {
                         if (encoded[encoded.Count - 1].Count > 0)
@@ -411,16 +414,18 @@ public class Encoder : MonoBehaviour
 
     void NewGlyphColor(Color color)
     {
+        currentGlyphColor = color;
+
         if (loadFile)
             foreach (Letter letter in rawLetters)
-                letter.Color = color;
+                letter.Color = currentGlyphColor;
         else
         {
             foreach (List<Letter> line in encoded)
                 foreach (Letter letter in line)
-                    letter.Color = color;
+                    letter.Color = currentGlyphColor;
 
-            cursor.SetColor(color);
+            cursor.SetColor(currentGlyphColor);
         }
     }
 }
