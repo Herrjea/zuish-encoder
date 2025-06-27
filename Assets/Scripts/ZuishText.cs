@@ -23,14 +23,19 @@ public class ZuishText : MonoBehaviour
     List<UILetter> letters;
 
 
-    void Init()
+    public void Init()
     {
-        cipher = Resources.Load<Cipher>("cipher");
-        letterPrefab = Resources.Load<GameObject>("UI letter");
+        if (cipher == null)
+            cipher = Resources.Load<Cipher>("cipher");
+        if (letterPrefab == null)
+            letterPrefab = Resources.Load<GameObject>("UI letter");
 
-        sprites = new Dictionary<char, Sprite>();
-        foreach (CharSpritePair pair in cipher.letters)
-            sprites.Add(pair.letter, pair.sprite);
+        if (sprites == null)
+        {
+            sprites = new Dictionary<char, Sprite>();
+            foreach (CharSpritePair pair in cipher.letters)
+                sprites.Add(pair.letter, pair.sprite);
+        }
 
         letters = new List<UILetter>();
 

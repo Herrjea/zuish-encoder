@@ -13,9 +13,14 @@ public class UIRandomColor : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.RightControl))
         {
-            UILetter.RandomColor = new Color(Random.Range(0f, 1f), Random.Range(0f, 1f), Random.Range(0f, 1f));
-            cam.backgroundColor = new Color(Random.Range(0f, 1f), Random.Range(0f, 1f), Random.Range(0f, 1f));
-            GameEvents.RandomizeColors.Invoke();
+            RandomizeColors();
         }
+    }
+
+    public void RandomizeColors()
+    {
+        UILetter.RandomColor = new Color(Random.Range(0f, 1f), Random.Range(0f, 1f), Random.Range(0f, 1f));
+        cam.backgroundColor = new Color(Random.Range(0f, 1f), Random.Range(0f, 1f), Random.Range(0f, 1f));
+        GameEvents.RandomizeColors.Invoke();
     }
 }

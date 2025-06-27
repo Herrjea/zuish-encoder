@@ -2,6 +2,7 @@ using UnityEngine;
 using System;
 using System.Collections;
 using System.Runtime.InteropServices;
+using UnityEngine.SceneManagement;
 
 
 public class Manager : MonoBehaviour
@@ -37,6 +38,11 @@ public class Manager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.RightControl))
         {
             RandomizeColors();
+        }
+
+        if (Input.GetKeyDown(KeyCode.Backspace))
+        {
+            SceneManager.LoadScene("ModeSelection");
         }
     }
 
