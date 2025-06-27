@@ -118,8 +118,6 @@ public class Manager : MonoBehaviour
         yield return new WaitForEndOfFrame();
 
 
-        //im saving a screenshot in unity, but i want to upload the webgl build of my project to itch.io, and the user can't access the files there. how can i make it to that when the user takes a screenshot they are asked where in their machine they want to store it?
-
 #if UNITY_WEBGL && !UNITY_EDITOR
         int width = Screen.width;
         int height = Screen.height;
