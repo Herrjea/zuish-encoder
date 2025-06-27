@@ -11,6 +11,7 @@ public class Manager : MonoBehaviour
     [SerializeField] GameObject canvas;
     [SerializeField] Encoder encoder;
     [SerializeField] bool canGoBack = true;
+    [SerializeField] TypingCursor cursor;
     Camera cam;
 
     [DllImport("__Internal")]
@@ -70,10 +71,15 @@ public class Manager : MonoBehaviour
     IEnumerator ScreenshotCoroutine()
     {
         bool canvasWasActive = canvas.activeInHierarchy;
+        bool cursorWasActive = cursor.gameObject.activeInHierarchy;
 
         if (canvasWasActive)
-        {
             canvas.SetActive(false);
+        if (cursorWasActive)
+            cursor.Hide();
+
+        if (canvasWasActive || cursorWasActive)
+        {
             yield return null;
         }
 
@@ -85,7 +91,10 @@ public class Manager : MonoBehaviour
         );
 
         yield return null;
-        canvas.SetActive(canvasWasActive);
+        if (canvasWasActive)
+            canvas.SetActive(true);
+        if (cursorWasActive)
+            cursor.Show();
 
         print("screenshot taken");
     }

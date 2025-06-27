@@ -7,6 +7,7 @@ public class TypingCursor : MonoBehaviour
     [SerializeField] AnimationCurve ease;
     SpriteRenderer sr;
     Color originalColor, transparent;
+    bool hidden = false;
 
     void Awake()
     {
@@ -17,6 +18,7 @@ public class TypingCursor : MonoBehaviour
 
     public void Play()
     {
+        hidden = false;
         StartCoroutine(Animation());
     }
 
@@ -34,18 +36,35 @@ public class TypingCursor : MonoBehaviour
 
             while (t < animationDuration)
             {
-                t += Time.deltaTime;
-                sr.color = Color.Lerp(
-                    originalColor,
-                    transparent,
-                    ease.Evaluate(t / animationDuration)
-                );
+                if (hidden)
+                {
+                    sr.color = transparent;
+                }
+                else
+                {
+                    t += Time.deltaTime;
+                    sr.color = Color.Lerp(
+                        originalColor,
+                        transparent,
+                        ease.Evaluate(t / animationDuration)
+                    );
+                }
                 
                 yield return null;
             }
 
             yield return null;
         }
+    }
+
+    public void Hide()
+    {
+        hidden = true;
+    }
+
+    public void Show()
+    {
+        hidden = false;
     }
 
 
