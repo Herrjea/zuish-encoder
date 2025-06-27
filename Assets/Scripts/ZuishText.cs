@@ -13,6 +13,8 @@ public class ZuishText : MonoBehaviour
     bool previousSpacing;
     [SerializeField] Color color = Color.black;
     Color previousColor;
+    [SerializeField] TextDirection direction = TextDirection.Vertical;
+    TextDirection previousDirection;
     
     static GameObject letterPrefab;
     static Cipher cipher;
@@ -64,6 +66,12 @@ public class ZuishText : MonoBehaviour
             UpdateColors();
             previousColor = color;
         }
+
+        if (previousDirection != direction)
+        {
+            UpdateDirection();
+            previousDirection = direction;
+        }
     }
 
     void UpdateText()
@@ -84,6 +92,7 @@ public class ZuishText : MonoBehaviour
                 letter.Sprite = sprites[c];
                 letter.Size = size;
                 letter.Color = color;
+                letter.Direction = direction;
                 letter.Position = 
                     1f * letters.Count * size 
                     + 
@@ -111,6 +120,12 @@ public class ZuishText : MonoBehaviour
     {
         foreach (UILetter letter in letters)
             letter.Color = color;
+    }
+
+    void UpdateDirection()
+    {
+        foreach (UILetter letter in letters)
+            letter.Direction = direction;
     }
 
     UILetter GenerateLetter(char c)

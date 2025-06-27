@@ -29,23 +29,23 @@ public class HueImageControl : MonoBehaviour, IDragHandler, IPointerDownHandler
         // get pointer position, clamped inside image
         // 0,0 is center
         Vector3 position;
-        float deltaY = rt.sizeDelta.y * .5f;
+        float deltaX = rt.sizeDelta.x * .5f;
         
         if (data != null)
         {
             position = rt.InverseTransformPoint(data.position);
 
-            position.x = 0;
-            if (position.y < -deltaY)
-                position.y = -deltaY;
-            if (position.y > deltaY)
-                position.y = deltaY;
+            position.y = 0;
+            if (position.x < -deltaX)
+                position.x = -deltaX;
+            if (position.x > deltaX)
+                position.x = deltaX;
         }
         else
         {
             position = new Vector3(
+                rt.sizeDelta.x * control.currentHue - rt.sizeDelta.x * .5f,
                 0,
-                rt.sizeDelta.y * control.currentHue - rt.sizeDelta.y * .5f,
                 0
             );
         }
@@ -53,11 +53,11 @@ public class HueImageControl : MonoBehaviour, IDragHandler, IPointerDownHandler
         pointerRT.localPosition = position;
 
         // shift to all positives
-        float y = position.y + deltaY;
+        float x = position.x + deltaX;
 
-        float normY = y / rt.sizeDelta.y;
+        float normX = x / rt.sizeDelta.x;
 
-        control.UpdateHue(normY);
+        control.UpdateHue(normX);
     }
 
 

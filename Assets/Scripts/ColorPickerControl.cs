@@ -32,16 +32,16 @@ public class ColorPickerControl : MonoBehaviour
 
     void CreateHueImage()
     {
-        hueTexture = new Texture2D(1, 16);
+        hueTexture = new Texture2D(16, 1);
         hueTexture.wrapMode = TextureWrapMode.Clamp;
         hueTexture.name = "HueTexture";
 
-        for (int i = 0; i < hueTexture.height; i++)
+        for (int i = 0; i < hueTexture.width; i++)
             hueTexture.SetPixel(
-                0, 
                 i, 
+                0, 
                 Color.HSVToRGB(
-                    1f * i / hueTexture.height, 
+                    1f * i / hueTexture.width, 
                     1, 
                     1
                 )

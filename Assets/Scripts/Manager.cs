@@ -29,7 +29,7 @@ public class Manager : MonoBehaviour
             TakeScreenshot();
         }
 
-        if (Input.GetKeyDown(KeyCode.Escape))
+        if (Input.GetKeyDown(KeyCode.Tab))
         {
             canvas.SetActive(!canvas.activeInHierarchy);
         }
