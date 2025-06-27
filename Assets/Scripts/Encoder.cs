@@ -19,6 +19,8 @@ public class Encoder : MonoBehaviour
     [SerializeField] int lineLength;
     [SerializeField] Spacing spacing = Spacing.Standard;
     [SerializeField] ZuishText spacingButtonText;
+    [SerializeField] Transform cursor;
+    SpriteRenderer cursorRenderer;
     List<List<Letter>> encoded;
     List<Letter> rawLetters;
     float spacingSize = 0.2f;
@@ -26,7 +28,6 @@ public class Encoder : MonoBehaviour
     Dictionary<KeyCode, char> chars;
 
 
-    //int x, y;
     void Awake()
     {
         encoded = new List<List<Letter>>();
@@ -42,6 +43,7 @@ public class Encoder : MonoBehaviour
                 rawLetters.Add(GenerateLetter(text[i]));
 
             UpdateVisuals();
+            cursor.gameObject.SetActive(false);
         }
         else
         {
@@ -75,6 +77,10 @@ public class Encoder : MonoBehaviour
                 { KeyCode.M, 'm' },
                 { KeyCode.Space, ' ' },
             };
+
+            cursorRenderer = cursor.GetComponent<SpriteRenderer>();
+
+            UpdatePositions();
         }
 
         GameEvents.NewGlyphColor.AddListener(NewGlyphColor);
@@ -172,12 +178,25 @@ public class Encoder : MonoBehaviour
         for (int i = 0; i < encoded.Count; i++)
             for (int j = 0; j < encoded[i].Count; j++)
             {
-                encoded[i][j].MoveTo(new Vector3(
-                    -i - (ApplySpacing ? spacingSize * i : 0), 
-                    -j - (ApplySpacing ? spacingSize * j : 0),
-                    0
-                ));
+                encoded[i][j].MoveTo(GetPosition(i, j));
             }
+
+        if (!loadFile)
+        {
+            int x = encoded.Count - 1;
+            int y = encoded[encoded.Count - 1].Count;
+
+            cursor.localPosition = GetPosition(x, y);
+        }
+    }
+
+    Vector3 GetPosition(int line, int letter)
+    {
+        return new Vector3(
+            -line - (ApplySpacing ? spacingSize * line : 0), 
+            -letter - (ApplySpacing ? spacingSize * letter : 0),
+            0
+        );
     }
     
 
@@ -202,6 +221,7 @@ public class Encoder : MonoBehaviour
     {
         if (!loadFile)
         {
+            // add letters
             foreach (KeyCode keyCode in chars.Keys)
                 if (Input.GetKeyDown(keyCode))
                 {
@@ -209,29 +229,40 @@ public class Encoder : MonoBehaviour
                     if (encoded.Count > 0)
                     {
                         if (encoded[encoded.Count - 1].Count > 0)
-                            letter.InstaMoveTo(encoded[encoded.Count - 1][encoded[encoded.Count - 1].Count - 1].Position);
+                            letter.InstaMoveTo(GetPosition(encoded.Count - 1, encoded[encoded.Count - 1].Count - 1));
                         else if (encoded.Count > 1)
-                            letter.InstaMoveTo(encoded[encoded.Count - 2][0].Position);
+                            letter.InstaMoveTo(GetPosition(encoded.Count - 2, 0));
                     }
                     encoded[encoded.Count - 1].Add(letter);
                     UpdatePositions();
                     UpdateTextBox();
                 }
 
+            // add line
             if (Input.GetKeyDown(KeyCode.Return))
+            {
                 encoded.Add(new List<Letter>());
 
+                UpdatePositions();
+                UpdateTextBox();
+            }
+
+            // remove letters
             if (Input.GetKeyDown(KeyCode.Backspace))
             {
+                //empty page
                 if (encoded.Count == 0 || (encoded.Count == 1 && encoded[0].Count == 0))
                     GameObject.FindFirstObjectByType<Manager>().LoadModeSelectionScene();
                 else
                 {
+                    // las line has something in it
                     if (encoded[encoded.Count - 1].Count > 0)
                     {
                         Destroy(encoded[encoded.Count - 1][encoded[encoded.Count - 1].Count - 1].gameObject);
                         encoded[encoded.Count - 1].RemoveAt(encoded[encoded.Count - 1].Count - 1);
                     }
+
+                    // last line is empty
                     else
                     {
                         encoded.RemoveAt(encoded.Count - 1);
@@ -253,7 +284,7 @@ public class Encoder : MonoBehaviour
         float height = 0;
 
         foreach (List<Letter> line in encoded)
-            if (line[line.Count - 1].Position.y < height)
+            if (line.Count > 0 && line[line.Count - 1].Position.y < height)
                 height = line[line.Count - 1].Position.y;
 
         transform.position = new Vector3(
@@ -385,8 +416,12 @@ public class Encoder : MonoBehaviour
             foreach (Letter letter in rawLetters)
                 letter.Color = color;
         else
+        {
             foreach (List<Letter> line in encoded)
                 foreach (Letter letter in line)
                     letter.Color = color;
+
+            cursorRenderer.color = color;
+        }
     }
 }
