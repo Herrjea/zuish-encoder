@@ -9,6 +9,7 @@ public class Manager : MonoBehaviour
 {
     [HideInInspector] public float currentHue = 1, currentSat = 0, currentVal = 0;
     [SerializeField] GameObject canvas;
+    [SerializeField] Encoder encoder;
     Camera cam;
 
     [DllImport("__Internal")]
@@ -33,6 +34,19 @@ public class Manager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Tab))
         {
             canvas.SetActive(!canvas.activeInHierarchy);
+        }
+
+        if (Input.GetKeyDown(KeyCode.LeftAlt))
+        {
+            encoder.ToggleSpacing();
+        }
+        if (Input.GetKeyDown(KeyCode.UpArrow))
+        {
+            encoder.LongerLine();
+        }
+        if (Input.GetKeyDown(KeyCode.DownArrow))
+        {
+            encoder.ShorterLine();
         }
 
         if (Input.GetKeyDown(KeyCode.RightControl))

@@ -258,6 +258,9 @@ public class Encoder : MonoBehaviour
 
     public void ShorterLine()
     {
+        if (lineLength <= 1)
+            return;
+
         lineLength--;
         UpdateVisuals();
     }
