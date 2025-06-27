@@ -19,8 +19,7 @@ public class Encoder : MonoBehaviour
     [SerializeField] int lineLength;
     [SerializeField] Spacing spacing = Spacing.Standard;
     [SerializeField] ZuishText spacingButtonText;
-    [SerializeField] Transform cursor;
-    SpriteRenderer cursorRenderer;
+    [SerializeField] TypingCursor cursor;
     List<List<Letter>> encoded;
     List<Letter> rawLetters;
     float spacingSize = 0.2f;
@@ -78,9 +77,8 @@ public class Encoder : MonoBehaviour
                 { KeyCode.Space, ' ' },
             };
 
-            cursorRenderer = cursor.GetComponent<SpriteRenderer>();
-
             UpdatePositions();
+            cursor.Play();
         }
 
         GameEvents.NewGlyphColor.AddListener(NewGlyphColor);
@@ -186,7 +184,8 @@ public class Encoder : MonoBehaviour
             int x = encoded.Count - 1;
             int y = encoded[encoded.Count - 1].Count;
 
-            cursor.localPosition = GetPosition(x, y);
+            cursor.transform.localPosition = GetPosition(x, y);
+            cursor.Restart();
         }
     }
 
@@ -421,7 +420,7 @@ public class Encoder : MonoBehaviour
                 foreach (Letter letter in line)
                     letter.Color = color;
 
-            cursorRenderer.color = color;
+            cursor.SetColor(color);
         }
     }
 }
