@@ -15,7 +15,8 @@ public class Manager : MonoBehaviour
     Camera cam;
 
     [DllImport("__Internal")]
-    private static extern void DownloadFile(string filename, string base64Data);
+    //private static extern void DownloadFile(string filename, string base64Data);
+    private static extern void DownloadFile(byte[] array, int byteLength, string fileName);
 
 
     void Awake()
@@ -64,7 +65,7 @@ public class Manager : MonoBehaviour
 
     public void TakeScreenshot()
     {
-        StartCoroutine(ScreenshotCoroutine());
+        //StartCoroutine(ScreenshotCoroutine());
         StartCoroutine(GetScreenshotBytes());
     }
 
@@ -101,21 +102,59 @@ public class Manager : MonoBehaviour
 
     private IEnumerator GetScreenshotBytes()
     {
+        bool canvasWasActive = canvas.activeInHierarchy;
+        bool cursorWasActive = cursor.gameObject.activeInHierarchy;
+
+        if (canvasWasActive)
+            canvas.SetActive(false);
+        if (cursorWasActive)
+            cursor.Hide();
+
+        if (canvasWasActive || cursorWasActive)
+        {
+            yield return null;
+        }
+
         yield return new WaitForEndOfFrame();
 
-        /*
-        im saving a screenshot in unity, but i want to upload the webgl build of my project to itch.io, and the user can't access the files there. how can i make it to that when the user takes a screenshot they are asked where in their machine they want to store it?
 
-        Texture2D screenImage = new Texture2D(Screen.width, Screen.height, TextureFormat.RGB24, false);
-        screenImage.ReadPixels(new Rect(0, 0, Screen.width, Screen.height), 0, 0);
-        screenImage.Apply();
+        //im saving a screenshot in unity, but i want to upload the webgl build of my project to itch.io, and the user can't access the files there. how can i make it to that when the user takes a screenshot they are asked where in their machine they want to store it?
 
-        byte[] imageBytes = screenImage.EncodeToPNG();
-        Destroy(screenImage);
+#if UNITY_WEBGL && !UNITY_EDITOR
+        int width = Screen.width;
+        int height = Screen.height;
 
-        string base64Image = System.Convert.ToBase64String(imageBytes);
-        DownloadFile("screenshot.png", base64Image);
-        */
+        Texture2D tex = new Texture2D(width, height, TextureFormat.RGB24, false);
+        tex.ReadPixels(new Rect(0, 0, width, height), 0, 0);
+        tex.Apply();
+
+        byte[] pngData = tex.EncodeToPNG();
+        Destroy(tex);    
+
+        DownloadFile(
+            pngData, 
+            pngData.Length, 
+            "screenshot " + DateTime.Now.ToString("yy-MM-dd HH-mm-ss") + ".png"
+        );
+#endif
+
+#if UNITY_EDITOR
+        ScreenCapture.CaptureScreenshot(
+            //Application.persistentDataPath + "/Screenshots/screenshot " +
+                "Assets/Resources/Screenshots/screenshot " +
+                DateTime.Now.ToString("yy-MM-dd HH-mm-ss") + ".png",
+            1
+        );
+#endif
+        
+
+        yield return null;
+        if (canvasWasActive)
+            canvas.SetActive(true);
+        if (cursorWasActive)
+            cursor.Show();
+
+        print("screenshot taken");
     }
 
 
