@@ -38,7 +38,14 @@ public class Encoder : MonoBehaviour
         
         if (loadFile)
         {
-            string text = ProcessString(File.ReadAllText("Assets/Resources/" + filePath + ".txt"));
+            string text;
+
+#if UNITY_WEBGL && !UNITY_EDITOR
+            text = PlayerPrefs.GetString("file");
+#else
+            text = ProcessString(File.ReadAllText("Assets/Resources/" + filePath + ".txt"));
+#endif
+
             for (int i = 0; i < text.Length; i++)
                 rawLetters.Add(GenerateLetter(text[i]));
 

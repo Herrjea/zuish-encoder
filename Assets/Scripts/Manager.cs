@@ -14,9 +14,11 @@ public class Manager : MonoBehaviour
     [SerializeField] TypingCursor cursor;
     Camera cam;
 
+#if UNITY_WEBGL && !UNITY_EDITOR
     [DllImport("__Internal")]
     //private static extern void DownloadFile(string filename, string base64Data);
     private static extern void DownloadFile(byte[] array, int byteLength, string fileName);
+#endif
 
 
     void Awake()

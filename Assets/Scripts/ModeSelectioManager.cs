@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
 using UnityEngine.SceneManagement;
+using System.Runtime.InteropServices;
 
 
 public class ModeSelectioManager : MonoBehaviour
@@ -14,6 +15,11 @@ public class ModeSelectioManager : MonoBehaviour
     int current = 0;
 
     [SerializeField] UIRandomColor randomColor;
+
+#if UNITY_WEBGL && !UNITY_EDITOR
+    [DllImport("__Internal")]
+    private static extern void UploadTextFile();
+#endif
 
 
     void Awake()
@@ -45,7 +51,14 @@ public class ModeSelectioManager : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Return))
         {
+#if UNITY_WEBGL && !UNITY_EDITOR
+            if (current == 0)
+                UploadTextFile();
+            else
+                SceneManager.LoadScene(sceneNames[current]);
+#else
             SceneManager.LoadScene(sceneNames[current]);
+#endif
         }
     }
 
@@ -54,5 +67,14 @@ public class ModeSelectioManager : MonoBehaviour
     {
         loadCursor.color = UILetter.RandomColor;
         typeCursor.color = UILetter.RandomColor;
+    }
+
+
+    public void OnFileSelected(string content)
+    {
+        PlayerPrefs.SetString("file", content);
+        PlayerPrefs.Save();
+
+        SceneManager.LoadScene(sceneNames[0]);
     }
 }
