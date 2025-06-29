@@ -243,10 +243,17 @@ public class Encoder : MonoBehaviour
 
                     if (encoded.Count > 0)
                     {
+                        // already something in last line
                         if (encoded[encoded.Count - 1].Count > 0)
                             letter.InstaMoveTo(GetPosition(encoded.Count - 1, encoded[encoded.Count - 1].Count - 1));
+
+                        // last line empty and last line != first line
                         else if (encoded.Count > 1)
                             letter.InstaMoveTo(GetPosition(encoded.Count - 2, 0));
+
+                        // first character in canvas
+                        else
+                            letter.InstaMoveTo(GetPosition(0, -1));
                     }
                     encoded[encoded.Count - 1].Add(letter);
                     UpdatePositions();
