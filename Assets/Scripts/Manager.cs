@@ -8,7 +8,7 @@ using UnityEngine.SceneManagement;
 public class Manager : MonoBehaviour
 {
     [HideInInspector] public float currentHue = 1, currentSat = 0, currentVal = 0;
-    [SerializeField] GameObject canvas;
+    [SerializeField] CanvasFade canvas;
     [SerializeField] Encoder encoder;
     [SerializeField] bool canGoBack = true;
     [SerializeField] TypingCursor cursor;
@@ -38,7 +38,7 @@ public class Manager : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Tab))
         {
-            canvas.SetActive(!canvas.activeInHierarchy);
+            canvas.ToggleVisibility();
         }
 
         if (Input.GetKeyDown(KeyCode.LeftAlt))
@@ -74,10 +74,10 @@ public class Manager : MonoBehaviour
     IEnumerator ScreenshotCoroutine()
     {
         bool canvasWasActive = canvas.activeInHierarchy;
-        bool cursorWasActive = cursor.gameObject.activeInHierarchy;
+        bool cursorWasActive = cursor.activeInHierarchy;
 
         if (canvasWasActive)
-            canvas.SetActive(false);
+            canvas.InstaHide();
         if (cursorWasActive)
             cursor.Hide();
 
@@ -95,7 +95,7 @@ public class Manager : MonoBehaviour
 
         yield return null;
         if (canvasWasActive)
-            canvas.SetActive(true);
+            canvas.InstaShow();
         if (cursorWasActive)
             cursor.Show();
 
@@ -105,10 +105,10 @@ public class Manager : MonoBehaviour
     private IEnumerator GetScreenshotBytes()
     {
         bool canvasWasActive = canvas.activeInHierarchy;
-        bool cursorWasActive = cursor.gameObject.activeInHierarchy;
+        bool cursorWasActive = cursor.activeInHierarchy;
 
         if (canvasWasActive)
-            canvas.SetActive(false);
+            canvas.InstaHide();
         if (cursorWasActive)
             cursor.Hide();
 
@@ -150,7 +150,7 @@ public class Manager : MonoBehaviour
 
         yield return null;
         if (canvasWasActive)
-            canvas.SetActive(true);
+            canvas.InstaShow();
         if (cursorWasActive)
             cursor.Show();
 

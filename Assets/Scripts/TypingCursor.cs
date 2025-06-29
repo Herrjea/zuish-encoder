@@ -74,4 +74,9 @@ public class TypingCursor : MonoBehaviour
         transparent = originalColor;
         transparent.a = 0;
     }
+
+    public bool activeInHierarchy
+    {
+        get => gameObject.activeInHierarchy;
+    }
 }
