@@ -20,6 +20,10 @@ public class Encoder : MonoBehaviour
     [SerializeField] Spacing spacing = Spacing.Standard;
     [SerializeField] ZuishText spacingButtonText;
     [SerializeField] TypingCursor cursor;
+    [SerializeField] float firstRemoveCooldown = .5f;
+    [SerializeField] float secondRemoveCooldown = .1f;
+    [SerializeField] float removeCooldownSpeedIncrease = 1.1f;
+    float actualRemoveCooldown;
     List<List<Letter>> encoded;
     List<Letter> rawLetters;
     float spacingSize = 0.2f;
@@ -41,7 +45,7 @@ public class Encoder : MonoBehaviour
             string text;
 
 #if UNITY_WEBGL && !UNITY_EDITOR
-            text = PlayerPrefs.GetString("file");
+            text = ProcessString(PlayerPrefs.GetString("file"));
 #else
             text = ProcessString(File.ReadAllText("Assets/Resources/" + filePath + ".txt"));
 #endif
@@ -224,6 +228,8 @@ public class Encoder : MonoBehaviour
     }
 
 
+    float backspaceTime;
+    bool onlyRemovedOne;
     void Update()
     {
         if (!loadFile)
@@ -256,29 +262,44 @@ public class Encoder : MonoBehaviour
                 UpdateTextBox();
             }
 
-            // remove letters
+
+            // remove letters or go back
+
             if (Input.GetKeyDown(KeyCode.Backspace))
             {
-                //empty page
+                // empty page
                 if (encoded.Count == 0 || (encoded.Count == 1 && encoded[0].Count == 0))
+                {
                     GameObject.FindFirstObjectByType<Manager>().LoadModeSelectionScene();
+                }
                 else
                 {
-                    // las line has something in it
-                    if (encoded[encoded.Count - 1].Count > 0)
-                    {
-                        Destroy(encoded[encoded.Count - 1][encoded[encoded.Count - 1].Count - 1].gameObject);
-                        encoded[encoded.Count - 1].RemoveAt(encoded[encoded.Count - 1].Count - 1);
-                    }
+                    BackspaceTick();
 
-                    // last line is empty
+                    backspaceTime = 0;
+                    onlyRemovedOne = true;
+                    actualRemoveCooldown = firstRemoveCooldown;
+                }
+            }
+
+            if (Input.GetKey(KeyCode.Backspace))
+            {
+                backspaceTime += Time.deltaTime;
+
+                if (backspaceTime >= actualRemoveCooldown)
+                {
+                    BackspaceTick();
+
+                    backspaceTime = 0;
+                    if (onlyRemovedOne)
+                    {
+                        actualRemoveCooldown = secondRemoveCooldown;
+                        onlyRemovedOne = false;
+                    }
                     else
                     {
-                        encoded.RemoveAt(encoded.Count - 1);
+                        actualRemoveCooldown /= removeCooldownSpeedIncrease;
                     }
-                    
-                    UpdatePositions();
-                    UpdateTextBox();
                 }
             }
         }
@@ -301,6 +322,31 @@ public class Encoder : MonoBehaviour
             -height / 2, 
             0
         );
+    }
+
+    void BackspaceTick()
+    {
+        // empty page
+        if (encoded.Count == 0 || (encoded.Count == 1 && encoded[0].Count == 0))
+        {
+            return;
+        }
+
+        // last line has something in it
+        if (encoded[encoded.Count - 1].Count > 0)
+        {
+            Destroy(encoded[encoded.Count - 1][encoded[encoded.Count - 1].Count - 1].gameObject);
+            encoded[encoded.Count - 1].RemoveAt(encoded[encoded.Count - 1].Count - 1);
+        }
+
+        // last line is empty
+        else
+        {
+            encoded.RemoveAt(encoded.Count - 1);
+        }
+                    
+        UpdatePositions();
+        UpdateTextBox();
     }
 
 
