@@ -65,41 +65,9 @@ public class Manager : MonoBehaviour
         }
     }
 
-    public void TakeScreenshot()
+    void TakeScreenshot()
     {
-        //StartCoroutine(ScreenshotCoroutine());
         StartCoroutine(GetScreenshotBytes());
-    }
-
-    IEnumerator ScreenshotCoroutine()
-    {
-        bool canvasWasActive = canvas.activeInHierarchy;
-        bool cursorWasActive = cursor.activeInHierarchy;
-
-        if (canvasWasActive)
-            canvas.InstaHide();
-        if (cursorWasActive)
-            cursor.Hide();
-
-        if (canvasWasActive || cursorWasActive)
-        {
-            yield return null;
-        }
-
-        ScreenCapture.CaptureScreenshot(
-            //Application.persistentDataPath + "/Screenshots/screenshot " +
-                "Assets/Resources/Screenshots/screenshot " +
-                DateTime.Now.ToString("yy-MM-dd HH-mm-ss") + ".png",
-            1
-        );
-
-        yield return null;
-        if (canvasWasActive)
-            canvas.InstaShow();
-        if (cursorWasActive)
-            cursor.Show();
-
-        print("screenshot taken");
     }
 
     private IEnumerator GetScreenshotBytes()

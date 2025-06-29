@@ -18,7 +18,6 @@ public class ZuishText : MonoBehaviour
     
     static GameObject letterPrefab;
     static Cipher cipher;
-    static Dictionary<char, Sprite> sprites;
 
     List<UILetter> letters;
 
@@ -26,16 +25,12 @@ public class ZuishText : MonoBehaviour
     public void Init()
     {
         if (cipher == null)
+        {
             cipher = Resources.Load<Cipher>("cipher");
+            cipher.Init();
+        }
         if (letterPrefab == null)
             letterPrefab = Resources.Load<GameObject>("UI letter");
-
-        if (sprites == null)
-        {
-            sprites = new Dictionary<char, Sprite>();
-            foreach (CharSpritePair pair in cipher.letters)
-                sprites.Add(pair.letter, pair.sprite);
-        }
 
         letters = new List<UILetter>();
 
@@ -81,7 +76,7 @@ public class ZuishText : MonoBehaviour
 
     void UpdateText()
     {
-        if (sprites == null || letterPrefab == null || cipher == null || letters == null)
+        if (letterPrefab == null || cipher == null || letters == null)
             Init();
 
         for (int i = transform.childCount - 1; i >= 0; i--)
@@ -90,11 +85,11 @@ public class ZuishText : MonoBehaviour
 
         UILetter letter;
         foreach (char c in text)
-            if (sprites.ContainsKey(c))
+            if (cipher.Contains(c))
             {
                 letter = GenerateLetter(c);
                 letter.Init();
-                letter.Sprite = sprites[c];
+                letter.Sprite = cipher[c];
                 letter.Size = size;
                 letter.Color = color;
                 letter.Direction = direction;

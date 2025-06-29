@@ -34,6 +34,8 @@ public class Encoder : MonoBehaviour
 
     void Awake()
     {
+        cipher.Init();
+
         encoded = new List<List<Letter>>();
         encoded.Add(new List<Letter>());
         rawLetters = new List<Letter>();
@@ -73,7 +75,7 @@ public class Encoder : MonoBehaviour
                 { KeyCode.A, 'a' },
                 { KeyCode.S, 's' },
                 { KeyCode.D, 'd' },
-                { KeyCode.F, 'g' },
+                { KeyCode.F, 'f' },
                 { KeyCode.G, 'g' },
                 { KeyCode.H, 'h' },
                 { KeyCode.J, 'j' },
@@ -86,6 +88,18 @@ public class Encoder : MonoBehaviour
                 { KeyCode.B, 'b' },
                 { KeyCode.N, 'n' },
                 { KeyCode.M, 'm' },
+                { KeyCode.Alpha0, '0' },
+                { KeyCode.Alpha1, '1' },
+                { KeyCode.Alpha2, '2' },
+                { KeyCode.Alpha3, '3' },
+                { KeyCode.Alpha4, '4' },
+                { KeyCode.Alpha5, '5' },
+                { KeyCode.Alpha6, '6' },
+                { KeyCode.Alpha7, '7' },
+                { KeyCode.Alpha8, '8' },
+                { KeyCode.Alpha9, '9' },
+                { KeyCode.Plus, '+' },
+                { KeyCode.Equals, '+' },
                 { KeyCode.Space, ' ' },
             };
 
@@ -403,8 +417,7 @@ public class Encoder : MonoBehaviour
     Letter GenerateLetter(char c)
     {
         Letter letter = GameObject.Instantiate(letterPrefab, transform).GetComponent<Letter>();
-        Sprite sprite = GetSprite(c);
-        letter.GetComponent<SpriteRenderer>().sprite = sprite;
+        letter.GetComponent<SpriteRenderer>().sprite = cipher.Contains(c) ? cipher[c] : null;
 
         if (c == ' ')
             letter.Type = LetterType.Space;
@@ -412,16 +425,6 @@ public class Encoder : MonoBehaviour
             letter.Type = LetterType.Linebreak;
 
         return letter;
-    }
-
-    Sprite GetSprite(char c)
-    {
-        foreach (CharSpritePair pair in cipher.letters)
-            if (pair.letter == c)
-                return pair.sprite;
-
-        print("value not found: '" + c + "'");
-        return null;
     }
 
 
