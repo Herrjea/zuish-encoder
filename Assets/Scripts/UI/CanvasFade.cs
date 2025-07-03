@@ -41,9 +41,6 @@ public class CanvasFade : MonoBehaviour
         }
 
         cg.alpha = fadeIn ? 1 : 0;
-
-
-        print(visible);
     }
 
     public void InstaHide()
