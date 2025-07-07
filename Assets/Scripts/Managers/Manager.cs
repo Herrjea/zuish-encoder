@@ -36,12 +36,12 @@ public class Manager : MonoBehaviour
             TakeScreenshot();
         }
 
-        if (Input.GetKeyDown(KeyCode.Tab))
+        if (Input.GetKeyDown(KeyCode.Escape))
         {
             canvas.ToggleVisibility();
         }
 
-        if (Input.GetKeyDown(KeyCode.LeftAlt))
+        if (Input.GetKeyDown(KeyCode.Tab))
         {
             encoder.ToggleSpacing();
         }
