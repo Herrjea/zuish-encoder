@@ -1,0 +1,11 @@
+por ahora, como está puesto en los descriptores de la asignatura, no te puedo aprobar pq hay mucho código que tiene pinta de no estar hecho por ti y necesito saber antes si conoces y entiendes ese código. al principio de la práctica sí que has estado haciendo cosas y avanzando, pero al final me he encontrado con otra cosa. si lo modificas pa que solo haya código tuyo, te evalúo tu código. y, mejor, si en algún momento puedes hablar, te pregunto por el código que has subido y cero problema.
+
+
+
+proyecto en itch.io: dioooo guapísimo no, lo siguiente. lo único que he echado en falta es alguna forma de hacer ver a los jugadores si el cursor tiene o no una pieza agarrada, pero tremendo el resto.
+
+proyecto en unity:
+
+cosas que te puedo decir a ti: pa la escena de victoria podrías haber hecho una sola, y en función de quién ganara ponías unos colores y unos textos, que eso ya lo has hecho, y así no la tienes duplicada, que estando duplicada supone bastante más trabajo cualquier cosa que quieras modificarles.
+cosas que me intrigan altamente: hay bastantes cosas en el código (operador ternario, Mathf.PI, oscillationFrequency, conversiones explícitas de tipo, comprobaciones de nulidad antes de acceder a una variable, clampear cosas entre 0 y 1 (incluso cuando no es necesario hacerlo), condiciones de ejecución de un método agrupadas al principio del método en lugar de expresado con tabulaciones / indentaciones, delegados para message broadcasting, etc.) que no hemos visto en clase y que me hacen pensar fuertemente que es código que has pillado por ahí. cosa que me parece genial siempre que hayas buscado qué es todo y hayas entendido bien todas las partes de todas las líneas que has incluido en el proyecto. y, encima, si has hecho todos esos cambios en literalmente cuatro días (del 20 de mayo al 23 de mayo, dice github), pues más intrigante parece to. y, encima encima, si hay bastantes bastantes cosas que tienen exactamente el mismo nombre que tienen en el proyecto de ángel, incluso cosas que están mal nombradas en el suyo, y tienes exactamente el mismo código luego dentro, pues bastante más misterioso se acaba quedando el asunto.
+perohueno, ya veré en el examen si te sale el código significativamente distinto al de la práctica, jejejej.

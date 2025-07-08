@@ -55,6 +55,12 @@ public class Encoder : MonoBehaviour
             for (int i = 0; i < text.Length; i++)
                 rawLetters.Add(GenerateLetter(text[i]));
 
+            // remove excess linebreaks at the end
+            // to prevent last line from being empty,
+            // otherwise width calculations fail tremendously
+            while (rawLetters[rawLetters.Count - 1].IsLinebreak)
+                rawLetters.RemoveAt(rawLetters.Count - 1);
+
             UpdateVisuals();
             cursor.gameObject.SetActive(false);
         }
@@ -325,7 +331,8 @@ public class Encoder : MonoBehaviour
             }
         }
 
-        if (encoded.Count == 0 ||encoded[encoded.Count - 1].Count == 0)
+
+        if (encoded.Count == 0 || encoded[encoded.Count - 1].Count == 0)
             return;
 
 

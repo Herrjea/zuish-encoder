@@ -1,0 +1,71 @@
+huoli, ángel. te cuento.
+este es el proyecto con el que vas a estar ahora:
+
+https://manuchi-nuchi.itch.io/tower-abilities
+
+con los números del 1 al 5 cambias cuál es la habilidad que está seleccionada, y con el click principal del ratón usas la habilidad que estuviera seleccionada, que entra en cooldown.
+
+ya sabes hacer prácticamente todo lo que tiene el proyecto. lo único nuevo que hay es herencia de clases, de lo que ya has escuchado un poquito pero que aún no has llegado a hacer. entonces. el sistema que tienes que montar es:
+
+- clase padre, que contenga todo lo que vaya a ser común a todas las habilidades (nombre, icono, duración del cooldown, función pa ejecutar la habilidad, etc.).
+- una clase por habilidad, heredando todas de la padre. sobreescriben la función de ejecutar su efecto, y cada una añade las variables que le sean necesarias (una habilidad de disparo, por ejemplo, necesita prefab del proyectil, velocidad del disparo, etc.).
+- una clase que gestione el input del jugador, y, con ello, gestione qué habilidad está activa en cada momento, y cuál se usa al hacer click.
+
+
+
+ahora. cómo se define y arma un sistema así.
+
+
+la clase padre tienes que marcarla como abstracta:
+
+public abstract class Ability : MonoBehaviour
+
+como forma de decirle a c# que nadie va a implementar esta clase, que solo se va a usar como plantilla y pa que otras hereden de ella.
+
+las variables y funciones a las que tengan que acceder las hijas, en lugar de como private, hay que marcarlos como protected, que hace que puedan acceder quienes hereden de ella pero no el resto de clases externas a la jerarquía de herencia.
+
+las funciones que vayan a sobrescribir las hijas hay que definirlas tb como abstractas, y no definir su cuerpo, pa decirle que solo estás declarando la función y que ya la implementará cada hija luego a su manera:
+
+public abstract void Trigger();
+
+
+en cada habilidad, cada clase hija, que hereda de la padre,
+
+public class HealAbility : Ability
+
+ya sí hay que definir (código del comportamiento de la habilidad) las funciones que hayas puesto como abstractas en la padre, y especificar que la sobrescriben:
+
+public override void Trigger()
+{
+    PuesCurar();
+}
+
+
+ahora. el script que gestiona el input y el cuándo se ejecutan las habilidades, que yo he llamado AbilityHolder pero le puedes poner como quieras, siempre que guarde relación con su cometido, tiene que tener una lista de habilidades,
+
+[SerializeField] Ability[] abilities;
+
+donde cada elemento tiene, técnicamente, el tipo de la clase padre, Ability, que hemos dicho que nadie va a implementar, en lugar del tipo de la habilidad específica en sí, pero la herencia de clases es transitiva:
+
+si X es de tipo A, y A hereda de B, entonces X es también de tipo B.
+
+así que todas las habilidades son de su tipo (ShootAbility, HealthRegenAbility, etc.) y también del tipo del padre (Ability), y justo eso es lo que nos permite poner cosas de tipo distinto en una misma lista, y por eso to este tinglao.
+
+además, a la hora de hacerle el AbilityHolder el trigger a una habilidad de la lista, se lo puede hacer sin problema, porque Ability (padre) tiene la función Trigger, aunque el código que se vaya a ejecutar sea siempre el de la hija pertinente en cada momento, al sobrescribir esta el trigger de la padre.
+
+
+y, lo último, pa que el pj tenga una habilidad y pueda usarla, hay que:
+
+- añadir el script de habilidad (habilidad concreta, no la padre) como componente al pj.
+- añadir ese script a la lista de habilidades del AbilityHolder, expuesta en el inspector.
+
+y listo.
+
+
+teniéndolo así montado ya tendría que funcionar. prueba a hacer por ejemplo dos habilidades de prueba, y que una en su trigger diga "a" y en otra diga "b", que son comportamientos técnicamente distintos, le pones un componente de cada una al pj, los añades a la lista del holder, le pones al holder la funcionalidad de cambiar cuál está seleccionada al pulsar 1 y al pulsar 2, y la de usar la que estuviera seleccionada cuando haces click (input.getmousebuttondown(0)), y con eso debería ir poniendo a o b en la consola conforma vayas haciendo click habiendo antes pulsado el 1 o el 2.
+
+y a partir de ahí, que veas que funcione la cosa, ya es to cuestabajo, que el resto no usa na nuevo. implementar la funcionalidad de cada habilidad, espaunear enemigos, que la salud se vea en enemigos y en el pj haciendo que su color cambie en un gradiente, añadir sistema de cooldown, hacer que las habilidades se comuniquen con su icono en la ui, y poquito más, pulidito extra.
+
+
+
+

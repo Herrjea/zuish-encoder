@@ -38,6 +38,7 @@ public class Manager : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Escape))
         {
+            canvas.gameObject.SetActive(true);
             canvas.ToggleVisibility();
         }
 
