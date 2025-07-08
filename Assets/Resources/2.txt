@@ -1,0 +1,16 @@
+up and down
+arrows
+change line size
+
+only available
+when loading
+txt file
+though
+
+and words longer
+than line length
+dont get cut
+
+but
+still
+awesome

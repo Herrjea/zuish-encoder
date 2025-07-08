@@ -401,11 +401,18 @@ public class Encoder : MonoBehaviour
                     result += c;
             }
 
-            else if ((c == '.' || c == '\n') && previous != '\n')
+            else if (c >= '0' && c <= '9')
+                result += c;
+
+            else if (c == '+')
+                result += c;
+
+            else if ((c == '.' || c == '\n')/* && previous != '\n'*/)
                 result += '\n';
 
             else if (previous != ' ' && previous != '\n')
                 result += ' ';
+
 
             if (result.Length > 0)
                 previous = result[result.Length - 1];
@@ -418,6 +425,7 @@ public class Encoder : MonoBehaviour
     {
         Letter letter = GameObject.Instantiate(letterPrefab, transform).GetComponent<Letter>();
         letter.GetComponent<SpriteRenderer>().sprite = cipher.Contains(c) ? cipher[c] : null;
+        letter.gameObject.name = c.ToString();
 
         if (c == ' ')
             letter.Type = LetterType.Space;

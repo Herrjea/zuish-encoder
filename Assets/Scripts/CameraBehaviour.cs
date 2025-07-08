@@ -4,6 +4,8 @@ public class CameraBehaviour : MonoBehaviour
 {
     [SerializeField] float positionSmoothTime = 1f;
     [SerializeField] float sizeSmoothTime = 1f;
+    [SerializeField] bool fixedSize = false;
+    [SerializeField] float fixedSizeSize = 11;
     Vector3 positionVelocity = Vector3.zero;
     float sizeVelocity = 0;
 
@@ -32,12 +34,15 @@ public class CameraBehaviour : MonoBehaviour
             positionSmoothTime
         );
 
-        cam.orthographicSize = Mathf.SmoothDamp(
-            cam.orthographicSize,
-            targetSize,
-            ref sizeVelocity,
-            sizeSmoothTime
-        );
+        if (fixedSize)
+            cam.orthographicSize = fixedSizeSize;
+        else
+            cam.orthographicSize = Mathf.SmoothDamp(
+                cam.orthographicSize,
+                targetSize,
+                ref sizeVelocity,
+                sizeSmoothTime
+            );
     }
 
 

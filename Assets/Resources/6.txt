@@ -1,0 +1,13 @@
+left ctrl
+take
+screenshot
+
+should
+automatically
+save it
+to your computer
+but it really
+depends on your
+browser and
+on your
+operative system

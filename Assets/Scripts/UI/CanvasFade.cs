@@ -31,6 +31,7 @@ public class CanvasFade : MonoBehaviour
     {
         float t = 0;
         visible = fadeIn;
+        gameObject.SetActive(true);
 
         while (t < fadeDuration)
         {
@@ -41,6 +42,8 @@ public class CanvasFade : MonoBehaviour
         }
 
         cg.alpha = fadeIn ? 1 : 0;
+        if (!fadeIn)
+            gameObject.SetActive(false);
     }
 
     public void InstaHide()
